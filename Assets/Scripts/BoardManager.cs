@@ -21,7 +21,6 @@ public class BoardManager : MonoBehaviour
     {
         candyPosition = new GameObject[row, column];
         CreateBoard();
-        ScanForMatches();
     }
 
     public void CreateBoard()
@@ -83,22 +82,33 @@ public class BoardManager : MonoBehaviour
                             }
                         }
                     }
-
-                    //DestroyMatches(i, j);
                 }
             }
         }
     }
 
-    //public void DestroyMatches(int column, int row)
+    //public void DestroyMatchesAt(int column, int row)
     //{
     //    if (candyPosition[column, row].GetComponent<Candy>().isMatched)
     //    {
     //        Destroy(candyPosition[column, row]);
     //        candyPosition[column, row] = null;
     //    }
+    //    //StartCoroutine(CollapseRow());
+    //}
 
-    //    StartCoroutine(CollapseRow());
+    //public void DestroyMatches()
+    //{
+    //    for (int i = 0; i < row; i++)
+    //    {
+    //        for (int j = 0; j < column; j++)
+    //        {
+    //            if (candyPosition[i , j] != null)
+    //            {
+    //                DestroyMatchesAt(i, j);
+    //            }
+    //        }
+    //    }
     //}
 
     //public IEnumerator CollapseRow()
@@ -108,7 +118,7 @@ public class BoardManager : MonoBehaviour
     //    {
     //        for (int j = 0; j < column; j++)
     //        {
-    //            if (candyPosition[i, j] == null)
+    //            if (candyPosition[i, j] != null)
     //            {
     //                nullCount++;
     //            }
