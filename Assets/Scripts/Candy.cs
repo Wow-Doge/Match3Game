@@ -7,8 +7,6 @@ public class Candy : MonoBehaviour
     public int atColumn;
     public int atRow;
     public bool isMatched = false;
-    public int previousColumn;
-    public int previousRow;
 
     private Vector2 firstTouch;
     private Vector2 finalTouch;
@@ -20,13 +18,12 @@ public class Candy : MonoBehaviour
     private GameObject otherCandy;
     private void Start()
     {
-        previousColumn = atColumn;
-        previousRow = atRow;
+        
     }
 
     private void Update()
     {
-        WhenMatches();
+        ChangeColor();
     }
     private void OnMouseDown()
     {
@@ -54,7 +51,6 @@ public class Candy : MonoBehaviour
     {
         if (distanceX > distanceY)
         {
-            //move horizontal
             if (firstTouch.x > finalTouch.x && atColumn > 0)
                 MoveLeft();
             if (firstTouch.x < finalTouch.x && atColumn < BoardManager.Instance.column - 1)
@@ -62,7 +58,6 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            //move vertical
             if (firstTouch.y > finalTouch.y && atRow > 0)
                 MoveDown();
             if (firstTouch.y < finalTouch.y && atRow < BoardManager.Instance.row - 1)
@@ -85,7 +80,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveRight()
@@ -103,7 +98,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveUp()
@@ -121,7 +116,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveDown()
@@ -139,7 +134,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     public void GetPosition()
@@ -148,24 +143,37 @@ public class Candy : MonoBehaviour
         transform.position = new Vector2(atColumn, atRow);
     }
 
-    public IEnumerator NotMatch(GameObject otherCandy)
+    public IEnumerator MoveObject(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + overTime)
+        {
+            candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            yield return null;
+        }
+        candyObject.transform.position = target;
+    }
+
+    public IEnumerator MoveBack(GameObject otherCandy)
     {
         yield return new WaitForSeconds(0.5f);
         if (otherCandy != null)
         {
             if (!isMatched && !otherCandy.GetComponent<Candy>().isMatched)
             {
+                int otherRow = otherCandy.GetComponent<Candy>().atRow;
+                int otherColumn = otherCandy.GetComponent<Candy>().atColumn;
                 otherCandy.GetComponent<Candy>().atRow = atRow;
                 otherCandy.GetComponent<Candy>().atColumn = atColumn;
-                atColumn = previousColumn;
-                atRow = previousRow;
+                atColumn = otherColumn;
+                atRow = otherRow;
                 GetPosition();
                 otherCandy.GetComponent<Candy>().GetPosition();
             }
         }
     }
 
-    public void WhenMatches() 
+    public void ChangeColor() 
     {
         if (isMatched)
         {
