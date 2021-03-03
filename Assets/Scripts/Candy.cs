@@ -7,8 +7,6 @@ public class Candy : MonoBehaviour
     public int atColumn;
     public int atRow;
     public bool isMatched = false;
-    public int previousColumn;
-    public int previousRow;
 
     private Vector2 firstTouch;
     private Vector2 finalTouch;
@@ -18,15 +16,10 @@ public class Candy : MonoBehaviour
     private float minDistance = 0.5f;
 
     private GameObject otherCandy;
-    private void Start()
-    {
-        previousColumn = atColumn;
-        previousRow = atRow;
-    }
 
     private void Update()
     {
-        WhenMatches();
+        ChangeColor();
     }
     private void OnMouseDown()
     {
@@ -85,7 +78,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveRight()
@@ -103,7 +96,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveUp()
@@ -121,7 +114,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     private void MoveDown()
@@ -139,7 +132,7 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NotMatch(otherCandy));
+            StartCoroutine(MoveBack(otherCandy));
         }
     }
     public void GetPosition()
@@ -148,24 +141,29 @@ public class Candy : MonoBehaviour
         transform.position = new Vector2(atColumn, atRow);
     }
 
-    public IEnumerator NotMatch(GameObject otherCandy)
+    public IEnumerator MoveBack(GameObject otherCandy)
     {
         yield return new WaitForSeconds(0.5f);
         if (otherCandy != null)
         {
             if (!isMatched && !otherCandy.GetComponent<Candy>().isMatched)
             {
+                Vector2 target = new Vector2(atColumn, atRow);
+                int targetRow = otherCandy.GetComponent<Candy>().atRow;
+                int targetColumn = otherCandy.GetComponent<Candy>().atColumn;
+                Vector2 current = new Vector2(targetColumn, targetRow);
                 otherCandy.GetComponent<Candy>().atRow = atRow;
                 otherCandy.GetComponent<Candy>().atColumn = atColumn;
-                atColumn = previousColumn;
-                atRow = previousRow;
+                atColumn = targetColumn;
+                atRow = targetRow;
+
                 GetPosition();
                 otherCandy.GetComponent<Candy>().GetPosition();
             }
         }
     }
 
-    public void WhenMatches() 
+    public void ChangeColor() 
     {
         if (isMatched)
         {
