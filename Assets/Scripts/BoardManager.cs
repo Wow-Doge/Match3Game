@@ -87,6 +87,23 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void DestroyMatches()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    {
+                        Destroy(candyPosition[i, j]);
+                    }
+                }
+            }
+        }
+    }
+
     //public void DestroyMatchesAt(int column, int row)
     //{
     //    if (candyPosition[column, row].GetComponent<Candy>().isMatched)
@@ -94,7 +111,7 @@ public class BoardManager : MonoBehaviour
     //        Destroy(candyPosition[column, row]);
     //        candyPosition[column, row] = null;
     //    }
-    //    //StartCoroutine(CollapseRow());
+    //    StartCoroutine(CollapseRow());
     //}
 
     //public void DestroyMatches()
@@ -103,7 +120,7 @@ public class BoardManager : MonoBehaviour
     //    {
     //        for (int j = 0; j < column; j++)
     //        {
-    //            if (candyPosition[i , j] != null)
+    //            if (candyPosition[i, j] != null)
     //            {
     //                DestroyMatchesAt(i, j);
     //            }

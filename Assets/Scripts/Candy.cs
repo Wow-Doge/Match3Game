@@ -15,18 +15,10 @@ public class Candy : MonoBehaviour
     private float distanceX;
     private float distanceY;
     private float minDistance = 0.5f;
-    private float lerpTime = 0.4f;
+    private float lerpTime = 0.2f;
 
     private GameObject otherCandy;
-    private void Start()
-    {
-        
-    }
 
-    private void Update()
-    {
-        ChangeColor();
-    }
     private void OnMouseDown()
     {
         firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -75,11 +67,7 @@ public class Candy : MonoBehaviour
         StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
         StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
-        if (isMatched)
-        {
-            
-        }
-        else
+        if (!isMatched)
         {
             StartCoroutine(MoveBack(otherCandy));
         }
@@ -95,11 +83,7 @@ public class Candy : MonoBehaviour
         StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
         StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
-        if (isMatched)
-        {
-            
-        }
-        else
+        if (!isMatched)
         {
             StartCoroutine(MoveBack(otherCandy));
         }
@@ -115,11 +99,7 @@ public class Candy : MonoBehaviour
         StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
         StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
-        if (isMatched)
-        {
-            
-        }
-        else
+        if (!isMatched)
         {
             StartCoroutine(MoveBack(otherCandy));
         }
@@ -134,15 +114,13 @@ public class Candy : MonoBehaviour
 
         StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
         StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
-        if (isMatched)
-        {
-            
-        }
-        else
+
+        if (!isMatched)
         {
             StartCoroutine(MoveBack(otherCandy));
         }
     }
+
     public void GetPosition()
     {
         BoardManager.Instance.candyPosition[atColumn, atRow] = this.gameObject;
@@ -158,10 +136,22 @@ public class Candy : MonoBehaviour
         }
         candyObject.transform.position = target;
         BoardManager.Instance.ScanForMatches();
+        BoardManager.Instance.DestroyMatches();
+    }
+    public IEnumerator MoveObjectBack(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
+    {
+        candyObject.GetComponent<Candy>().GetPosition();
+        float startTime = Time.time;
+        while (Time.time < startTime + overTime)
+        {
+            candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            yield return null;
+        }
+        candyObject.transform.position = target;
     }
     public IEnumerator MoveBack(GameObject otherCandy)
     {
-        yield return new WaitForSeconds(lerpTime + 0.1f);
+        yield return new WaitForSeconds(lerpTime);
         if (otherCandy != null)
         {
             if (!isMatched && !otherCandy.GetComponent<Candy>().isMatched)
@@ -175,18 +165,9 @@ public class Candy : MonoBehaviour
                 atColumn = targetColumn;
                 atRow = targetRow;
 
-                StartCoroutine(MoveObject(gameObject, target, current, lerpTime));
-                StartCoroutine(MoveObject(otherCandy, current, target, lerpTime));
+                StartCoroutine(MoveObjectBack(gameObject, target, current, lerpTime));
+                StartCoroutine(MoveObjectBack(otherCandy, current, target, lerpTime));
             }
-        }
-    }
-
-    public void ChangeColor() 
-    {
-        if (isMatched)
-        {
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.color = new Color(0f, 0f, 0f, 0.2f);
         }
     }
 }
