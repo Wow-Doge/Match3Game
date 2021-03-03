@@ -6,6 +6,7 @@ public class Candy : MonoBehaviour
 {
     public int atColumn;
     public int atRow;
+
     public bool isMatched = false;
 
     private Vector2 firstTouch;
@@ -14,6 +15,7 @@ public class Candy : MonoBehaviour
     private float distanceX;
     private float distanceY;
     private float minDistance = 0.5f;
+    private float lerpTime = 0.4f;
 
     private GameObject otherCandy;
     private void Start()
@@ -29,13 +31,11 @@ public class Candy : MonoBehaviour
     {
         firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
-
     private void OnMouseUp()
     {
         finalTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         CalculateDistance();
     }
-
     private void CalculateDistance()
     {
         distanceX = Mathf.Abs(firstTouch.x - finalTouch.x);
@@ -46,7 +46,6 @@ public class Candy : MonoBehaviour
             MoveCandy();
         }
     }
-
     private void MoveCandy()
     {
         if (distanceX > distanceY)
@@ -73,8 +72,8 @@ public class Candy : MonoBehaviour
         this.atColumn -= 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
-        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
+        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
         if (isMatched)
         {
@@ -93,8 +92,8 @@ public class Candy : MonoBehaviour
         this.atColumn += 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
-        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
+        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
         if (isMatched)
         {
@@ -113,8 +112,8 @@ public class Candy : MonoBehaviour
         this.atRow += 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
-        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
+        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
 
         if (isMatched)
         {
@@ -133,8 +132,8 @@ public class Candy : MonoBehaviour
         this.atRow -= 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
-        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
+        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
         if (isMatched)
         {
             
@@ -147,7 +146,6 @@ public class Candy : MonoBehaviour
     public void GetPosition()
     {
         BoardManager.Instance.candyPosition[atColumn, atRow] = this.gameObject;
-        //transform.position = new Vector2(atColumn, atRow);
     }
     public IEnumerator MoveObject(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
     {
@@ -163,7 +161,7 @@ public class Candy : MonoBehaviour
     }
     public IEnumerator MoveBack(GameObject otherCandy)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(lerpTime + 0.1f);
         if (otherCandy != null)
         {
             if (!isMatched && !otherCandy.GetComponent<Candy>().isMatched)
@@ -177,8 +175,8 @@ public class Candy : MonoBehaviour
                 atColumn = targetColumn;
                 atRow = targetRow;
 
-                StartCoroutine(MoveObject(gameObject, target, current, 0.4f));
-                StartCoroutine(MoveObject(otherCandy, current, target, 0.4f));
+                StartCoroutine(MoveObject(gameObject, target, current, lerpTime));
+                StartCoroutine(MoveObject(otherCandy, current, target, lerpTime));
             }
         }
     }
