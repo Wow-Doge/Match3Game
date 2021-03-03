@@ -135,7 +135,6 @@ public class Candy : MonoBehaviour
 
         StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
         StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
-
         if (isMatched)
         {
             
@@ -148,21 +147,20 @@ public class Candy : MonoBehaviour
     public void GetPosition()
     {
         BoardManager.Instance.candyPosition[atColumn, atRow] = this.gameObject;
-        transform.position = new Vector2(atColumn, atRow);
+        //transform.position = new Vector2(atColumn, atRow);
     }
-
     public IEnumerator MoveObject(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
     {
+        candyObject.GetComponent<Candy>().GetPosition();
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
             candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
             yield return null;
         }
-        candyObject.GetComponent<Candy>().GetPosition();
+        candyObject.transform.position = target;
         BoardManager.Instance.ScanForMatches();
     }
-
     public IEnumerator MoveBack(GameObject otherCandy)
     {
         yield return new WaitForSeconds(0.5f);
