@@ -69,8 +69,7 @@ public class Candy : MonoBehaviour
         this.atColumn -= 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
-        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
+        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
 
         if (!isMatched)
         {
@@ -85,8 +84,7 @@ public class Candy : MonoBehaviour
         this.atColumn += 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
-        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
+        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
 
         if (!isMatched)
         {
@@ -101,8 +99,7 @@ public class Candy : MonoBehaviour
         this.atRow += 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
-        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
+        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
 
         if (!isMatched)
         {
@@ -117,8 +114,7 @@ public class Candy : MonoBehaviour
         this.atRow -= 1;
         Vector2 target = new Vector2(atColumn, atRow);
 
-        StartCoroutine(MoveObject(gameObject, current, target, lerpTime));
-        StartCoroutine(MoveObject(otherCandy, target, current, lerpTime));
+        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
 
         if (!isMatched)
         {
@@ -130,29 +126,35 @@ public class Candy : MonoBehaviour
     {
         BoardManager.Instance.candyPosition[atColumn, atRow] = this.gameObject;
     }
-    public IEnumerator MoveObject(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
+    public IEnumerator SwapObject(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
     {
-        candyObject.GetComponent<Candy>().GetPosition();
+        thisCandy.GetComponent<Candy>().GetPosition();
+        nextCandy.GetComponent<Candy>().GetPosition();
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
-            candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            thisCandy.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            nextCandy.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
             yield return null;
         }
-        candyObject.transform.position = target;
+        thisCandy.transform.position = target;
+        nextCandy.transform.position = current;
         BoardManager.Instance.ScanForMatches();
         BoardManager.Instance.DestroyMatches();
     }
-    public IEnumerator MoveObjectBack(GameObject candyObject, Vector2 current, Vector2 target, float overTime)
+    public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
     {
-        candyObject.GetComponent<Candy>().GetPosition();
+        thisCandy.GetComponent<Candy>().GetPosition();
+        nextCandy.GetComponent<Candy>().GetPosition();
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
-            candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            thisCandy.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            nextCandy.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
             yield return null;
         }
-        candyObject.transform.position = target;
+        thisCandy.transform.position = target;
+        nextCandy.transform.position = current;
     }
     public IEnumerator MoveBack(GameObject otherCandy)
     {
@@ -170,8 +172,7 @@ public class Candy : MonoBehaviour
                 atColumn = targetColumn;
                 atRow = targetRow;
 
-                StartCoroutine(MoveObjectBack(gameObject, target, current, lerpTime));
-                StartCoroutine(MoveObjectBack(otherCandy, current, target, lerpTime));
+                StartCoroutine(SwapObjectBack(gameObject, otherCandy, target, current, lerpTime));
             }
         }
     }
