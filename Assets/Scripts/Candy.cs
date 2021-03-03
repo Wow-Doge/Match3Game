@@ -19,6 +19,11 @@ public class Candy : MonoBehaviour
 
     private GameObject otherCandy;
 
+    public void Update()
+    {
+        
+    }
+
     private void OnMouseDown()
     {
         firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);

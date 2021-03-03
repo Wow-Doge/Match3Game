@@ -98,55 +98,34 @@ public class BoardManager : MonoBehaviour
                     if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
                         Destroy(candyPosition[i, j]);
+                        candyPosition[i, j] = null;
                     }
                 }
             }
         }
+        //StartCoroutine(DecreaseRow());
     }
 
-    //public void DestroyMatchesAt(int column, int row)
-    //{
-    //    if (candyPosition[column, row].GetComponent<Candy>().isMatched)
-    //    {
-    //        Destroy(candyPosition[column, row]);
-    //        candyPosition[column, row] = null;
-    //    }
-    //    StartCoroutine(CollapseRow());
-    //}
-
-    //public void DestroyMatches()
-    //{
-    //    for (int i = 0; i < row; i++)
-    //    {
-    //        for (int j = 0; j < column; j++)
-    //        {
-    //            if (candyPosition[i, j] != null)
-    //            {
-    //                DestroyMatchesAt(i, j);
-    //            }
-    //        }
-    //    }
-    //}
-
-    //public IEnumerator CollapseRow()
+    //public IEnumerator DecreaseRow()
     //{
     //    int nullCount = 0;
     //    for (int i = 0; i < row; i++)
     //    {
     //        for (int j = 0; j < column; j++)
     //        {
-    //            if (candyPosition[i, j] != null)
+    //            if (candyPosition[i, j] == null)
     //            {
     //                nullCount++;
     //            }
     //            else if (nullCount > 0)
     //            {
     //                candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
-    //                candyPosition[i, j].GetComponent<Candy>().GetPosition();
+    //                candyPosition[i, j] = null;
     //            }
     //        }
+    //        nullCount = 0;
     //    }
-    //    yield return new WaitForSeconds(0.25f);
+    //    yield return new WaitForSeconds(0.4f);
     //}
 
     public bool CheckMatchInit(int column, int row, GameObject candy)
