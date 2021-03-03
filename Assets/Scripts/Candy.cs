@@ -67,16 +67,18 @@ public class Candy : MonoBehaviour
 
     private void MoveLeft()
     {
+        Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn - 1, atRow];
         otherCandy.GetComponent<Candy>().atColumn += 1;
         this.atColumn -= 1;
+        Vector2 target = new Vector2(atColumn, atRow);
 
-        GetPosition();
-        otherCandy.GetComponent<Candy>().GetPosition();
-        BoardManager.Instance.ScanForMatches();
+        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
+        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+
         if (isMatched)
         {
-
+            
         }
         else
         {
@@ -85,16 +87,18 @@ public class Candy : MonoBehaviour
     }
     private void MoveRight()
     {
+        Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn + 1, atRow];
         otherCandy.GetComponent<Candy>().atColumn -= 1;
         this.atColumn += 1;
+        Vector2 target = new Vector2(atColumn, atRow);
 
-        GetPosition();
-        otherCandy.GetComponent<Candy>().GetPosition();
-        BoardManager.Instance.ScanForMatches();
+        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
+        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+
         if (isMatched)
         {
-
+            
         }
         else
         {
@@ -103,16 +107,18 @@ public class Candy : MonoBehaviour
     }
     private void MoveUp()
     {
+        Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn, atRow + 1];
         otherCandy.GetComponent<Candy>().atRow -= 1;
         this.atRow += 1;
+        Vector2 target = new Vector2(atColumn, atRow);
 
-        GetPosition();
-        otherCandy.GetComponent<Candy>().GetPosition();
-        BoardManager.Instance.ScanForMatches();
+        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
+        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+
         if (isMatched)
         {
-
+            
         }
         else
         {
@@ -121,16 +127,18 @@ public class Candy : MonoBehaviour
     }
     private void MoveDown()
     {
+        Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn, atRow - 1];
         otherCandy.GetComponent<Candy>().atRow += 1;
         this.atRow -= 1;
+        Vector2 target = new Vector2(atColumn, atRow);
 
-        GetPosition();
-        otherCandy.GetComponent<Candy>().GetPosition();
-        BoardManager.Instance.ScanForMatches();
+        StartCoroutine(MoveObject(gameObject, current, target, 0.4f));
+        StartCoroutine(MoveObject(otherCandy, target, current, 0.4f));
+
         if (isMatched)
         {
-
+            
         }
         else
         {
@@ -151,7 +159,8 @@ public class Candy : MonoBehaviour
             candyObject.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
             yield return null;
         }
-        candyObject.transform.position = target;
+        candyObject.GetComponent<Candy>().GetPosition();
+        BoardManager.Instance.ScanForMatches();
     }
 
     public IEnumerator MoveBack(GameObject otherCandy)
@@ -161,14 +170,17 @@ public class Candy : MonoBehaviour
         {
             if (!isMatched && !otherCandy.GetComponent<Candy>().isMatched)
             {
-                int otherRow = otherCandy.GetComponent<Candy>().atRow;
-                int otherColumn = otherCandy.GetComponent<Candy>().atColumn;
+                Vector2 target = new Vector2(atColumn, atRow);
+                int targetRow = otherCandy.GetComponent<Candy>().atRow;
+                int targetColumn = otherCandy.GetComponent<Candy>().atColumn;
+                Vector2 current = new Vector2(targetColumn, targetRow);
                 otherCandy.GetComponent<Candy>().atRow = atRow;
                 otherCandy.GetComponent<Candy>().atColumn = atColumn;
-                atColumn = otherColumn;
-                atRow = otherRow;
-                GetPosition();
-                otherCandy.GetComponent<Candy>().GetPosition();
+                atColumn = targetColumn;
+                atRow = targetRow;
+
+                StartCoroutine(MoveObject(gameObject, target, current, 0.4f));
+                StartCoroutine(MoveObject(otherCandy, current, target, 0.4f));
             }
         }
     }
