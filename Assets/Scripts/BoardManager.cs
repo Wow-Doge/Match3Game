@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
 
     public int column;
     public int row;
+    public float awaitTime = 0.2f;
 
     public GameObject[,] candyPosition;
 
@@ -85,14 +86,32 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        StartCoroutine(DestroyMatches());
+        CheckPossibleMatch();
     }
-
-
+    public void CheckPossibleMatch()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (!candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    {
+                        //change state
+                    }
+                    else
+                    {
+                        StartCoroutine(DestroyMatches());
+                    }
+                }
+            }
+        }
+    }
 
     public IEnumerator DestroyMatches()
     {
-        yield return new WaitForSeconds(0.35f);
+        yield return new WaitForSeconds(awaitTime);
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
@@ -107,7 +126,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(awaitTime);
         StartCoroutine(CollapseRow());
     }
 
@@ -132,7 +151,7 @@ public class BoardManager : MonoBehaviour
             }
             nullCount = 0;
         }
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(awaitTime);
         ScanForMatches();
     }
 

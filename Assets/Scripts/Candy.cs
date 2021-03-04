@@ -14,7 +14,7 @@ public class Candy : MonoBehaviour
     private float distanceX;
     private float distanceY;
     private float minDistance = 0.5f;
-    private float lerpTime = 0.3f;
+    private float lerpTime = 0.2f;
 
     private GameObject otherCandy;
 
@@ -133,12 +133,11 @@ public class Candy : MonoBehaviour
     {
         thisCandy.GetComponent<Candy>().GetPosition();
         nextCandy.GetComponent<Candy>().GetPosition();
-        float startTime = 0;
-        while (startTime < overTime)
+        float startTime = Time.time;
+        while (Time.time < startTime + overTime)
         {
-            thisCandy.transform.position = Vector2.Lerp(current, target, startTime / overTime);
-            nextCandy.transform.position = Vector2.Lerp(target, current, startTime / overTime);
-            startTime += Time.deltaTime;
+            thisCandy.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            nextCandy.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
             yield return null;
         }
         thisCandy.transform.position = target;
