@@ -8,7 +8,7 @@ public class BoardManager : MonoBehaviour
 
     public int column;
     public int row;
-    public float awaitTime = 0.2f;
+    public float awaitTime = 0.25f;
 
     public GameObject[,] candyPosition;
 
@@ -174,5 +174,10 @@ public class BoardManager : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void RefillBoard()
+    {
+
     }
 }

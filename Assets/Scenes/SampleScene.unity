@@ -249,7 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   column: 9
   row: 9
-  awaitTime: 0.2
+  awaitTime: 0.25
   candyType:
   - {fileID: 2444122507372375416, guid: 7e9557e3b3959074fb132df38b8b2de6, type: 3}
   - {fileID: 6808386326144663756, guid: ba390644dc438c44fb131a836bb201f7, type: 3}

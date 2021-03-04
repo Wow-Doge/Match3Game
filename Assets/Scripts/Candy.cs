@@ -186,7 +186,7 @@ public class Candy : MonoBehaviour
         {
             while (Time.time < startTime + lerpTime)
             {
-                transform.position = Vector2.Lerp(transform.position, new Vector2(atColumn, atRow), (Time.time - startTime) / lerpTime / 3);
+                transform.position = Vector2.Lerp(transform.position, new Vector2(atColumn, atRow), ((Time.time - startTime) / lerpTime));
                 yield return null;
             }
             this.gameObject.transform.position = new Vector2(atColumn, atRow);
