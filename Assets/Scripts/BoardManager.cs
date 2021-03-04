@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
 
     public int column;
     public int row;
+    public float awaitTime = 0.25f;
 
     public GameObject[,] candyPosition;
 
@@ -85,52 +86,74 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        CheckPossibleMatch();
+    }
+    public void CheckPossibleMatch()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (!candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    {
+                        //change state
+                    }
+                    else
+                    {
+                        StartCoroutine(DestroyMatches());
+                    }
+                }
+            }
+        }
     }
 
-    //public void DestroyMatchesAt(int column, int row)
-    //{
-    //    if (candyPosition[column, row].GetComponent<Candy>().isMatched)
-    //    {
-    //        Destroy(candyPosition[column, row]);
-    //        candyPosition[column, row] = null;
-    //    }
-    //    //StartCoroutine(CollapseRow());
-    //}
+    public IEnumerator DestroyMatches()
+    {
+        yield return new WaitForSeconds(awaitTime);
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    {
+                        Destroy(candyPosition[i, j]);
+                        candyPosition[i, j] = null;
+                    }
+                }
+            }
+        }
+        yield return new WaitForSeconds(awaitTime);
+        StartCoroutine(CollapseRow());
+    }
 
-    //public void DestroyMatches()
-    //{
-    //    for (int i = 0; i < row; i++)
-    //    {
-    //        for (int j = 0; j < column; j++)
-    //        {
-    //            if (candyPosition[i , j] != null)
-    //            {
-    //                DestroyMatchesAt(i, j);
-    //            }
-    //        }
-    //    }
-    //}
-
-    //public IEnumerator CollapseRow()
-    //{
-    //    int nullCount = 0;
-    //    for (int i = 0; i < row; i++)
-    //    {
-    //        for (int j = 0; j < column; j++)
-    //        {
-    //            if (candyPosition[i, j] != null)
-    //            {
-    //                nullCount++;
-    //            }
-    //            else if (nullCount > 0)
-    //            {
-    //                candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
-    //                candyPosition[i, j].GetComponent<Candy>().GetPosition();
-    //            }
-    //        }
-    //    }
-    //    yield return new WaitForSeconds(0.25f);
-    //}
+    public IEnumerator CollapseRow()
+    {
+        int nullCount = 0;
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] == null)
+                {
+                    nullCount++;
+                }
+                else if (nullCount > 0)
+                {
+                    candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
+                    StartCoroutine(candyPosition[i, j].GetComponent<Candy>().CollapseCandy());
+                    candyPosition[i, j].GetComponent<Candy>().GetPosition();
+                    candyPosition[i, j] = null;
+                }
+            }
+            nullCount = 0;
+        }
+        yield return new WaitForSeconds(awaitTime);
+        ScanForMatches();
+    }
 
     public bool CheckMatchInit(int column, int row, GameObject candy)
     {
@@ -151,5 +174,10 @@ public class BoardManager : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void RefillBoard()
+    {
+
     }
 }
