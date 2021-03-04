@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState
+{
+    Idling,
+    Moving
+}
+
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
 
+    public GameState currentState = GameState.Idling;
     public int column;
     public int row;
+    public int offset;
     public float awaitTime = 0.25f;
 
     public GameObject[,] candyPosition;
@@ -30,7 +38,7 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < column; j++)
             {
-                Vector2 tempPosition = new Vector2(i, j);
+                Vector2 tempPosition = new Vector2(i, j + offset);
                 int random = Random.Range(0, candyType.Count);
 
                 int maxIterations = 0;
@@ -185,7 +193,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (candyPosition[i, j] == null)
                 {
-                    Vector2 tempPosition = new Vector2(i, j);
+                    Vector2 tempPosition = new Vector2(i, j + offset);
                     int random = Random.Range(0, candyType.Count);
                     GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
 
@@ -198,30 +206,4 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
-    //private bool MatchesOnBoard()
-    //{
-    //    for (int i = 0; i < row; i++)
-    //    {
-    //        for (int j = 0; j < column; j++)
-    //        {
-    //            if (candyPosition[i, j].GetComponent<Candy>().isMatched)
-    //            {
-    //                return true;
-    //            }
-    //        }
-    //    }
-    //    return false;
-    //}
-
-    //private IEnumerator FillBoardCo()
-    //{
-    //    RefillBoard();
-
-    //    while (MatchesOnBoard())
-    //    {
-    //        yield return new WaitForSeconds(0.5f);
-    //        DestroyMatches();
-    //    }
-    //}
 }

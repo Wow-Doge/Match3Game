@@ -20,21 +20,33 @@ public class Candy : MonoBehaviour
 
     public void Start()
     {
-        
+        StartCoroutine(CollapseCandy());
     }
     public void Update()
     {
         
     }
 
+    public IEnumerator SlideIn()
+    {
+
+        yield return null;
+    }
+
     private void OnMouseDown()
     {
-        firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (BoardManager.Instance.currentState == GameState.Idling)
+        {
+            firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
     }
     private void OnMouseUp()
     {
-        finalTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        CalculateDistance();
+        if (BoardManager.Instance.currentState == GameState.Idling)
+        {
+            finalTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            CalculateDistance();
+        }
     }
     private void CalculateDistance()
     {
@@ -44,6 +56,7 @@ public class Candy : MonoBehaviour
         if (distanceX > minDistance || distanceY > minDistance)
         {
             MoveCandy();
+            BoardManager.Instance.currentState = GameState.Moving;
         }
     }
     private void MoveCandy()
@@ -177,6 +190,8 @@ public class Candy : MonoBehaviour
                 StartCoroutine(SwapObjectBack(gameObject, otherCandy, target, current, lerpTime));
             }
         }
+        yield return new WaitForSeconds(lerpTime);
+        BoardManager.Instance.currentState = GameState.Idling;
     }
 
     public IEnumerator CollapseCandy()
