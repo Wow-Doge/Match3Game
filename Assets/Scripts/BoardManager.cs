@@ -34,7 +34,7 @@ public class BoardManager : MonoBehaviour
                 int random = Random.Range(0, candyType.Count);
 
                 int maxIterations = 0;
-                while (CheckMatchInit(i, j, candyType[random]))
+                while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
                 {
                     random = Random.Range(0, candyType.Count);
                     maxIterations++;
@@ -52,6 +52,7 @@ public class BoardManager : MonoBehaviour
 
     public void ScanForMatches()
     {
+        RefillBoard();
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
@@ -178,6 +179,49 @@ public class BoardManager : MonoBehaviour
 
     public void RefillBoard()
     {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] == null)
+                {
+                    Vector2 tempPosition = new Vector2(i, j);
+                    int random = Random.Range(0, candyType.Count);
+                    GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
 
+                    newCandy.GetComponent<Candy>().atRow = j;
+                    newCandy.GetComponent<Candy>().atColumn = i;
+                    newCandy.transform.parent = this.transform;
+                    newCandy.name = newCandy.name.Replace("(Clone)", "");
+                    candyPosition[i, j] = newCandy;
+                }
+            }
+        }
     }
+
+    //private bool MatchesOnBoard()
+    //{
+    //    for (int i = 0; i < row; i++)
+    //    {
+    //        for (int j = 0; j < column; j++)
+    //        {
+    //            if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+    //            {
+    //                return true;
+    //            }
+    //        }
+    //    }
+    //    return false;
+    //}
+
+    //private IEnumerator FillBoardCo()
+    //{
+    //    RefillBoard();
+
+    //    while (MatchesOnBoard())
+    //    {
+    //        yield return new WaitForSeconds(0.5f);
+    //        DestroyMatches();
+    //    }
+    //}
 }
