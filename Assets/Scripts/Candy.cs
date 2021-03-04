@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Candy : MonoBehaviour
@@ -15,10 +14,14 @@ public class Candy : MonoBehaviour
     private float distanceX;
     private float distanceY;
     private float minDistance = 0.5f;
-    private float lerpTime = 0.2f;
+    private float lerpTime = 0.3f;
 
     private GameObject otherCandy;
 
+    public void Start()
+    {
+        
+    }
     public void Update()
     {
         
@@ -130,17 +133,17 @@ public class Candy : MonoBehaviour
     {
         thisCandy.GetComponent<Candy>().GetPosition();
         nextCandy.GetComponent<Candy>().GetPosition();
-        float startTime = Time.time;
-        while (Time.time < startTime + overTime)
+        float startTime = 0;
+        while (startTime < overTime)
         {
-            thisCandy.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
-            nextCandy.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
+            thisCandy.transform.position = Vector2.Lerp(current, target, startTime / overTime);
+            nextCandy.transform.position = Vector2.Lerp(target, current, startTime / overTime);
+            startTime += Time.deltaTime;
             yield return null;
         }
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
         BoardManager.Instance.ScanForMatches();
-        BoardManager.Instance.DestroyMatches();
     }
     public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
     {
@@ -174,6 +177,20 @@ public class Candy : MonoBehaviour
 
                 StartCoroutine(SwapObjectBack(gameObject, otherCandy, target, current, lerpTime));
             }
+        }
+    }
+
+    public IEnumerator CollapseCandy()
+    {
+        float startTime = Time.time;
+        if (this.gameObject != null)
+        {
+            while (Time.time < startTime + lerpTime)
+            {
+                transform.position = Vector2.Lerp(transform.position, new Vector2(atColumn, atRow), (Time.time - startTime) / lerpTime / 3);
+                yield return null;
+            }
+            this.gameObject.transform.position = new Vector2(atColumn, atRow);
         }
     }
 }

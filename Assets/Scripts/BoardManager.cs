@@ -85,10 +85,14 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(DestroyMatches());
     }
 
-    public void DestroyMatches()
+
+
+    public IEnumerator DestroyMatches()
     {
+        yield return new WaitForSeconds(0.35f);
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
@@ -103,30 +107,34 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        //StartCoroutine(DecreaseRow());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CollapseRow());
     }
 
-    //public IEnumerator DecreaseRow()
-    //{
-    //    int nullCount = 0;
-    //    for (int i = 0; i < row; i++)
-    //    {
-    //        for (int j = 0; j < column; j++)
-    //        {
-    //            if (candyPosition[i, j] == null)
-    //            {
-    //                nullCount++;
-    //            }
-    //            else if (nullCount > 0)
-    //            {
-    //                candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
-    //                candyPosition[i, j] = null;
-    //            }
-    //        }
-    //        nullCount = 0;
-    //    }
-    //    yield return new WaitForSeconds(0.4f);
-    //}
+    public IEnumerator CollapseRow()
+    {
+        int nullCount = 0;
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] == null)
+                {
+                    nullCount++;
+                }
+                else if (nullCount > 0)
+                {
+                    candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
+                    StartCoroutine(candyPosition[i, j].GetComponent<Candy>().CollapseCandy());
+                    candyPosition[i, j].GetComponent<Candy>().GetPosition();
+                    candyPosition[i, j] = null;
+                }
+            }
+            nullCount = 0;
+        }
+        yield return new WaitForSeconds(0.3f);
+        ScanForMatches();
+    }
 
     public bool CheckMatchInit(int column, int row, GameObject candy)
     {
