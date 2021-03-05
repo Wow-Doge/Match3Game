@@ -167,7 +167,6 @@ public class BoardManager : MonoBehaviour
             nullCount = 0;
         }
         yield return new WaitForSeconds(awaitTime);
-        //currentState = GameState.Idling;
         ScanForMatches();
     }
 
