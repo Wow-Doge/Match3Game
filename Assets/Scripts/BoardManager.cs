@@ -95,30 +95,36 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        CheckPossibleMatch();
+        CheckPossibleMatches();
     }
-    public void CheckPossibleMatch()
+    public void CheckPossibleMatches()
     {
+        int count = 0;
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
-                    if (!candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
-                        //change state
+                        StartCoroutine(DestroyCandy());
                     }
                     else
                     {
-                        StartCoroutine(DestroyMatches());
+                        count++;
                     }
                 }
             }
         }
+
+        if (count == column * row)
+        {
+            currentState = GameState.Idling;
+        }
     }
 
-    public IEnumerator DestroyMatches()
+    public IEnumerator DestroyCandy()
     {
         yield return new WaitForSeconds(awaitTime);
         for (int i = 0; i < row; i++)
@@ -161,28 +167,8 @@ public class BoardManager : MonoBehaviour
             nullCount = 0;
         }
         yield return new WaitForSeconds(awaitTime);
+        //currentState = GameState.Idling;
         ScanForMatches();
-    }
-
-    public bool CheckMatchInit(int column, int row, GameObject candy)
-    {
-        if (column > 1)
-        {
-            if (candyPosition[column - 1, row].name == candy.name &&
-                candyPosition[column - 2, row].name == candy.name)
-            {
-                return true;
-            }
-        }
-        if (row > 1)
-        {
-            if (candyPosition[column, row - 1].name == candy.name &&
-                candyPosition[column, row - 2].name == candy.name)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void RefillBoard()
@@ -205,5 +191,25 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+    }
+    public bool CheckMatchInit(int column, int row, GameObject candy)
+    {
+        if (column > 1)
+        {
+            if (candyPosition[column - 1, row].name == candy.name &&
+                candyPosition[column - 2, row].name == candy.name)
+            {
+                return true;
+            }
+        }
+        if (row > 1)
+        {
+            if (candyPosition[column, row - 1].name == candy.name &&
+                candyPosition[column, row - 2].name == candy.name)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

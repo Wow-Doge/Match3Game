@@ -22,16 +22,6 @@ public class Candy : MonoBehaviour
     {
         StartCoroutine(CollapseCandy());
     }
-    public void Update()
-    {
-        
-    }
-
-    public IEnumerator SlideIn()
-    {
-
-        yield return null;
-    }
 
     private void OnMouseDown()
     {
@@ -56,11 +46,11 @@ public class Candy : MonoBehaviour
         if (distanceX > minDistance || distanceY > minDistance)
         {
             MoveCandy();
-            BoardManager.Instance.currentState = GameState.Moving;
         }
     }
     private void MoveCandy()
     {
+        BoardManager.Instance.currentState = GameState.Moving;
         if (distanceX > distanceY)
         {
             if (firstTouch.x > finalTouch.x && atColumn > 0)
@@ -170,6 +160,8 @@ public class Candy : MonoBehaviour
         }
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
+        yield return new WaitForSeconds(lerpTime);
+        BoardManager.Instance.currentState = GameState.Idling;
     }
     public IEnumerator MoveBack(GameObject otherCandy)
     {
@@ -190,8 +182,6 @@ public class Candy : MonoBehaviour
                 StartCoroutine(SwapObjectBack(gameObject, otherCandy, target, current, lerpTime));
             }
         }
-        yield return new WaitForSeconds(lerpTime);
-        BoardManager.Instance.currentState = GameState.Idling;
     }
 
     public IEnumerator CollapseCandy()
