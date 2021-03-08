@@ -22,6 +22,8 @@ public class BoardManager : MonoBehaviour
 
     public List<GameObject> candyType = new List<GameObject>();
 
+    public List<GameObject> currentMatches = new List<GameObject>();
+
     private void Awake()
     {
         Instance = this;
@@ -64,30 +66,59 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < column; j++)
             {
-                if (candyPosition[i, j] != null)
+                GameObject currentCandy = candyPosition[i, j];
+                if (currentCandy != null)
                 {
-                    if (i >= 0 && i < row - 2)
+                    if (i > 0 && i < row - 1)
                     {
-                        if (candyPosition[i + 1, j] != null && candyPosition[i + 2, j] != null)
+                        GameObject leftCandy = candyPosition[i - 1, j];
+                        GameObject rightCandy = candyPosition[i + 1, j];
+                        if (leftCandy != null && rightCandy != null)
                         {
-                            if (candyPosition[i + 1, j].name == candyPosition[i, j].name && candyPosition[i + 2, j].name == candyPosition[i, j].name)
+                            if (leftCandy.name == currentCandy.name && rightCandy.name == currentCandy.name)
                             {
-                                candyPosition[i, j].GetComponent<Candy>().isMatched = true;
-                                candyPosition[i + 1, j].GetComponent<Candy>().isMatched = true;
-                                candyPosition[i + 2, j].GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(currentCandy))
+                                {
+                                    currentMatches.Add(currentCandy);
+                                }
+                                currentCandy.GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(leftCandy))
+                                {
+                                    currentMatches.Add(leftCandy);
+                                }
+                                leftCandy.GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(rightCandy))
+                                {
+                                    currentMatches.Add(rightCandy);
+                                }
+                                rightCandy.GetComponent<Candy>().isMatched = true;
                             }
                         }
                     }
 
-                    if (j >= 0 && j < column - 2)
+                    if (j > 0 && j < column - 1)
                     {
-                        if (candyPosition[i, j + 1] != null && candyPosition[i, j + 2] != null)
+                        GameObject downCandy = candyPosition[i, j - 1];
+                        GameObject upCandy = candyPosition[i, j + 1];
+                        if (downCandy != null && upCandy != null)
                         {
-                            if (candyPosition[i, j + 1].name == candyPosition[i, j].name && candyPosition[i, j + 2].name == candyPosition[i, j].name)
+                            if (downCandy.name == currentCandy.name && upCandy.name == downCandy.name)
                             {
-                                candyPosition[i, j].GetComponent<Candy>().isMatched = true;
-                                candyPosition[i, j + 1].GetComponent<Candy>().isMatched = true;
-                                candyPosition[i, j + 2].GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(currentCandy))
+                                {
+                                    currentMatches.Add(currentCandy);
+                                }
+                                currentCandy.GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(upCandy))
+                                {
+                                    currentMatches.Add(upCandy);
+                                }
+                                upCandy.GetComponent<Candy>().isMatched = true;
+                                if (!currentMatches.Contains(downCandy))
+                                {
+                                    currentMatches.Add(downCandy);
+                                }
+                                downCandy.GetComponent<Candy>().isMatched = true;
                             }
                         }
                     }
@@ -139,6 +170,7 @@ public class BoardManager : MonoBehaviour
                 {
                     if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
+                        currentMatches.Remove(candyPosition[i, j]);
                         Destroy(candyPosition[i, j]);
                         candyPosition[i, j] = null;
                     }
@@ -233,15 +265,15 @@ public class BoardManager : MonoBehaviour
 
     private List<GameObject> GetRowCandies(int row)
     {
-        List<GameObject> columnCandies = new List<GameObject>();
+        List<GameObject> rowCandies = new List<GameObject>();
         for (int i = 0; i < row; i++)
         {
             if (candyPosition[i, row] != null)
             {
-                columnCandies.Add(candyPosition[i, row]);
+                rowCandies.Add(candyPosition[i, row]);
                 candyPosition[i, row].GetComponent<Candy>().isMatched = true;
             }
         }
-        return columnCandies;
+        return rowCandies;
     }
 }

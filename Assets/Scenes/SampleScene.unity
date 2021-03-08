@@ -248,8 +248,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  column: 10
-  row: 10
+  column: 9
+  row: 9
   offset: 5
   awaitTime: 0.25
   candyType:
@@ -258,3 +258,4 @@ MonoBehaviour:
   - {fileID: 8454123369769689135, guid: ea1cb2276c75b254db12708c09f57d75, type: 3}
   - {fileID: 700340073591132606, guid: 4102ab6fe900a7b4db29a9ef43400729, type: 3}
   - {fileID: 7461044822135968363, guid: 9fd14cbe75ea39a4d81d052fd70c35e8, type: 3}
+  currentMatches: []
