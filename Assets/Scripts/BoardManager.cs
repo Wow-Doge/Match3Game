@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum GameState
 {
@@ -77,6 +78,26 @@ public class BoardManager : MonoBehaviour
                         {
                             if (leftCandy.name == currentCandy.name && rightCandy.name == currentCandy.name)
                             {
+                                if (currentCandy.GetComponent<Candy>().isRowBomb || leftCandy.GetComponent<Candy>().isRowBomb || rightCandy.GetComponent<Candy>().isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowCandies(j));
+                                }
+
+                                if (currentCandy.GetComponent<Candy>().isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnCandies(i));
+                                }
+
+                                if (leftCandy.GetComponent<Candy>().isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnCandies(i - 1));
+                                }
+
+                                if (rightCandy.GetComponent<Candy>().isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnCandies(i + 1));
+                                }
+
                                 if (!currentMatches.Contains(currentCandy))
                                 {
                                     currentMatches.Add(currentCandy);
@@ -104,6 +125,26 @@ public class BoardManager : MonoBehaviour
                         {
                             if (downCandy.name == currentCandy.name && upCandy.name == downCandy.name)
                             {
+                                if (currentCandy.GetComponent<Candy>().isColumnBomb || upCandy.GetComponent<Candy>().isColumnBomb || downCandy.GetComponent<Candy>().isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnCandies(i));
+                                }
+
+                                if (currentCandy.GetComponent<Candy>().isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowCandies(j));
+                                }
+
+                                if (upCandy.GetComponent<Candy>().isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowCandies(j + 1));
+                                }
+
+                                if (downCandy.GetComponent<Candy>().isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowCandies(j - 1));
+                                }
+
                                 if (!currentMatches.Contains(currentCandy))
                                 {
                                     currentMatches.Add(currentCandy);
@@ -249,29 +290,29 @@ public class BoardManager : MonoBehaviour
         return false;
     }
 
-    private List<GameObject> GetColumnCandies(int column)
+    private List<GameObject> GetColumnCandies(int boardColumn)
     {
         List<GameObject> columnCandies = new List<GameObject>();
-        for (int i = 0; i < column; i++)
+        for (int i = 0; i < row; i++)
         {
-            if (candyPosition[column, i] != null)
+            if (candyPosition[boardColumn, i] != null)
             {
-                columnCandies.Add(candyPosition[column, i]);
-                candyPosition[column, i].GetComponent<Candy>().isMatched = true;
+                columnCandies.Add(candyPosition[boardColumn, i]);
+                candyPosition[boardColumn, i].GetComponent<Candy>().isMatched = true;
             }
         }
         return columnCandies;
     }
 
-    private List<GameObject> GetRowCandies(int row)
+    private List<GameObject> GetRowCandies(int boardRow)
     {
         List<GameObject> rowCandies = new List<GameObject>();
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < column; i++)
         {
-            if (candyPosition[i, row] != null)
+            if (candyPosition[i, boardRow] != null)
             {
-                rowCandies.Add(candyPosition[i, row]);
-                candyPosition[i, row].GetComponent<Candy>().isMatched = true;
+                rowCandies.Add(candyPosition[i, boardRow]);
+                candyPosition[i, boardRow].GetComponent<Candy>().isMatched = true;
             }
         }
         return rowCandies;

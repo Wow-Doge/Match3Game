@@ -47,19 +47,19 @@ public class Candy : MonoBehaviour
 
     private void OnMouseOver()
     {
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    isRowBomb = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = rowStripe;
+        //}
+
         if (Input.GetMouseButtonDown(1))
         {
             isColumnBomb = true;
             SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
             mySprite.sprite = columnStripe;
         }
-
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    isRowBomb = true;
-        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-        //    mySprite.sprite = rowStripe;
-        //}
     }
 
     private void CalculateDistance()
