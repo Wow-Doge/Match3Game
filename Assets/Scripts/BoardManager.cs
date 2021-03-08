@@ -58,9 +58,8 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void ScanForMatches()
+    public void ScanBoard()
     {
-        RefillBoard();
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
@@ -95,11 +94,12 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        CheckPossibleMatches();
+        DestroyCandy();
     }
-    public void CheckPossibleMatches()
+    public void DestroyCandy()
     {
         int count = 0;
+        int desCount = 0;
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
@@ -108,7 +108,7 @@ public class BoardManager : MonoBehaviour
                 {
                     if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
-                        StartCoroutine(DestroyCandy());
+                        desCount++;
                     }
                     else
                     {
@@ -117,14 +117,18 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        if (desCount > 0)
+        {
+            StartCoroutine(DestroyCandyAt());
+        }
 
-        if (count == column * row)
+        else if (count == column * row)
         {
             currentState = GameState.Idling;
         }
     }
 
-    public IEnumerator DestroyCandy()
+    public IEnumerator DestroyCandyAt()
     {
         yield return new WaitForSeconds(awaitTime);
         for (int i = 0; i < row; i++)
@@ -167,7 +171,7 @@ public class BoardManager : MonoBehaviour
             nullCount = 0;
         }
         yield return new WaitForSeconds(awaitTime);
-        ScanForMatches();
+        RefillBoard();
     }
 
     public void RefillBoard()
@@ -190,6 +194,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        ScanBoard();
     }
     public bool CheckMatchInit(int column, int row, GameObject candy)
     {

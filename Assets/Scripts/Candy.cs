@@ -145,7 +145,7 @@ public class Candy : MonoBehaviour
         }
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
-        BoardManager.Instance.ScanForMatches();
+        BoardManager.Instance.ScanBoard();
     }
     public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
     {
