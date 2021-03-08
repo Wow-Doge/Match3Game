@@ -216,4 +216,32 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
+
+    private List<GameObject> GetColumnCandies(int column)
+    {
+        List<GameObject> columnCandies = new List<GameObject>();
+        for (int i = 0; i < column; i++)
+        {
+            if (candyPosition[column, i] != null)
+            {
+                columnCandies.Add(candyPosition[column, i]);
+                candyPosition[column, i].GetComponent<Candy>().isMatched = true;
+            }
+        }
+        return columnCandies;
+    }
+
+    private List<GameObject> GetRowCandies(int row)
+    {
+        List<GameObject> columnCandies = new List<GameObject>();
+        for (int i = 0; i < row; i++)
+        {
+            if (candyPosition[i, row] != null)
+            {
+                columnCandies.Add(candyPosition[i, row]);
+                candyPosition[i, row].GetComponent<Candy>().isMatched = true;
+            }
+        }
+        return columnCandies;
+    }
 }

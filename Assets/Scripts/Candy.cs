@@ -5,8 +5,12 @@ public class Candy : MonoBehaviour
 {
     public int atColumn;
     public int atRow;
-
     public bool isMatched = false;
+
+    public bool isColumnBomb;
+    public bool isRowBomb;
+    public Sprite columnStripe;
+    public Sprite rowStripe;
 
     private Vector2 firstTouch;
     private Vector2 finalTouch;
@@ -20,6 +24,8 @@ public class Candy : MonoBehaviour
 
     public void Start()
     {
+        isColumnBomb = false;
+        isRowBomb = false;
         StartCoroutine(CollapseCandy());
     }
 
@@ -38,6 +44,24 @@ public class Candy : MonoBehaviour
             CalculateDistance();
         }
     }
+
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            isColumnBomb = true;
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = columnStripe;
+        }
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    isRowBomb = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = rowStripe;
+        //}
+    }
+
     private void CalculateDistance()
     {
         distanceX = Mathf.Abs(firstTouch.x - finalTouch.x);
