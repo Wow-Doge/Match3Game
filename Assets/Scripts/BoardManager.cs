@@ -79,22 +79,22 @@ public class BoardManager : MonoBehaviour
                         {
                             if (leftCandy.name == currentCandy.name && rightCandy.name == currentCandy.name)
                             {
-                                if (currentCandy.GetComponent<Candy>().isRowBomb || leftCandy.GetComponent<Candy>().isRowBomb || rightCandy.GetComponent<Candy>().isRowBomb)
+                                if (currentCandy.GetComponent<Candy>().isRowStripe || leftCandy.GetComponent<Candy>().isRowStripe || rightCandy.GetComponent<Candy>().isRowStripe)
                                 {
                                     currentMatches.Union(GetRowCandies(j));
                                 }
 
-                                if (currentCandy.GetComponent<Candy>().isColumnBomb)
+                                if (currentCandy.GetComponent<Candy>().isColumnStripe)
                                 {
                                     currentMatches.Union(GetColumnCandies(i));
                                 }
 
-                                if (leftCandy.GetComponent<Candy>().isColumnBomb)
+                                if (leftCandy.GetComponent<Candy>().isColumnStripe)
                                 {
                                     currentMatches.Union(GetColumnCandies(i - 1));
                                 }
 
-                                if (rightCandy.GetComponent<Candy>().isColumnBomb)
+                                if (rightCandy.GetComponent<Candy>().isColumnStripe)
                                 {
                                     currentMatches.Union(GetColumnCandies(i + 1));
                                 }
@@ -126,22 +126,22 @@ public class BoardManager : MonoBehaviour
                         {
                             if (downCandy.name == currentCandy.name && upCandy.name == downCandy.name)
                             {
-                                if (currentCandy.GetComponent<Candy>().isColumnBomb || upCandy.GetComponent<Candy>().isColumnBomb || downCandy.GetComponent<Candy>().isColumnBomb)
+                                if (currentCandy.GetComponent<Candy>().isColumnStripe || upCandy.GetComponent<Candy>().isColumnStripe || downCandy.GetComponent<Candy>().isColumnStripe)
                                 {
                                     currentMatches.Union(GetColumnCandies(i));
                                 }
 
-                                if (currentCandy.GetComponent<Candy>().isRowBomb)
+                                if (currentCandy.GetComponent<Candy>().isRowStripe)
                                 {
                                     currentMatches.Union(GetRowCandies(j));
                                 }
 
-                                if (upCandy.GetComponent<Candy>().isRowBomb)
+                                if (upCandy.GetComponent<Candy>().isRowStripe)
                                 {
                                     currentMatches.Union(GetRowCandies(j + 1));
                                 }
 
-                                if (downCandy.GetComponent<Candy>().isRowBomb)
+                                if (downCandy.GetComponent<Candy>().isRowStripe)
                                 {
                                     currentMatches.Union(GetRowCandies(j - 1));
                                 }
@@ -172,25 +172,20 @@ public class BoardManager : MonoBehaviour
     public void DestroyCandy()
     {
         int count = 0;
-        int desCount = 0;
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
-                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
-                    {
-                        desCount++;
-                    }
-                    else
+                    if (!candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
                         count++;
                     }
                 }
             }
         }
-        if (desCount > 0)
+        if (currentMatches.Count > 0)
         {
             StartCoroutine(DestroyCandyAt());
         }
@@ -222,7 +217,6 @@ public class BoardManager : MonoBehaviour
         yield return new WaitForSeconds(awaitTime);
         StartCoroutine(CollapseRow());
     }
-
     public IEnumerator CollapseRow()
     {
         int nullCount = 0;
@@ -247,7 +241,6 @@ public class BoardManager : MonoBehaviour
         yield return new WaitForSeconds(awaitTime);
         RefillBoard();
     }
-
     public void RefillBoard()
     {
         for (int i = 0; i < row; i++)
@@ -290,7 +283,6 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-
     private List<GameObject> GetColumnCandies(int boardColumn)
     {
         List<GameObject> columnCandies = new List<GameObject>();
@@ -304,7 +296,6 @@ public class BoardManager : MonoBehaviour
         }
         return columnCandies;
     }
-
     private List<GameObject> GetRowCandies(int boardRow)
     {
         List<GameObject> rowCandies = new List<GameObject>();
@@ -319,12 +310,4 @@ public class BoardManager : MonoBehaviour
         return rowCandies;
     }
 
-    public bool CheckSelectedCandy()
-    {
-        if (selectedCandy.GetComponent<Candy>().isMatched)
-        {
-            return true;
-        }
-        return false;
-    }
 }

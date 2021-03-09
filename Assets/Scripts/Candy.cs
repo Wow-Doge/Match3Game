@@ -7,8 +7,8 @@ public class Candy : MonoBehaviour
     public int atRow;
     public bool isMatched = false;
 
-    public bool isColumnBomb;
-    public bool isRowBomb;
+    public bool isColumnStripe;
+    public bool isRowStripe;
     public Sprite columnStripe;
     public Sprite rowStripe;
 
@@ -24,8 +24,8 @@ public class Candy : MonoBehaviour
 
     public void Start()
     {
-        isColumnBomb = false;
-        isRowBomb = false;
+        isColumnStripe = false;
+        isRowStripe = false;
         StartCoroutine(CollapseCandy());
     }
 
@@ -47,16 +47,16 @@ public class Candy : MonoBehaviour
 
     private void OnMouseOver()
     {
-        //if (Input.GetMouseButtonDown(1))
-        //{
-        //    isRowBomb = true;
-        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-        //    mySprite.sprite = rowStripe;
-        //}
+        if (Input.GetMouseButtonDown(2))
+        {
+            isRowStripe = true;
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = rowStripe;
+        }
 
         if (Input.GetMouseButtonDown(1))
         {
-            isColumnBomb = true;
+            isColumnStripe = true;
             SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
             mySprite.sprite = columnStripe;
         }
