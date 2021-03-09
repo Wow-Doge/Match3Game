@@ -69,6 +69,7 @@ public class Candy : MonoBehaviour
 
         if (distanceX > minDistance || distanceY > minDistance)
         {
+            BoardManager.Instance.selectedCandy = this.gameObject;
             MoveCandy();
         }
     }

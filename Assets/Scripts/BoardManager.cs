@@ -22,8 +22,9 @@ public class BoardManager : MonoBehaviour
     public GameObject[,] candyPosition;
 
     public List<GameObject> candyType = new List<GameObject>();
-
     public List<GameObject> currentMatches = new List<GameObject>();
+
+    public GameObject selectedCandy;
 
     private void Awake()
     {
@@ -316,5 +317,14 @@ public class BoardManager : MonoBehaviour
             }
         }
         return rowCandies;
+    }
+
+    public bool CheckSelectedCandy()
+    {
+        if (selectedCandy.GetComponent<Candy>().isMatched)
+        {
+            return true;
+        }
+        return false;
     }
 }
