@@ -20,7 +20,7 @@ public class Candy : MonoBehaviour
     private float minDistance = 0.5f;
     private float lerpTime = 0.2f;
 
-    private GameObject otherCandy;
+    public GameObject otherCandy;
 
     public void Start()
     {
@@ -91,7 +91,6 @@ public class Candy : MonoBehaviour
                 MoveUp();
         }
     }
-
     private void MoveLeft()
     {
         Vector2 current = new Vector2(atColumn, atRow);
@@ -220,6 +219,24 @@ public class Candy : MonoBehaviour
                 yield return null;
             }
             this.gameObject.transform.position = new Vector2(atColumn, atRow);
+        }
+    }
+
+    public void ColumnStripe()
+    {
+        if (isColumnStripe)
+        {
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = columnStripe;
+        }
+    }
+
+    public void RowStripe()
+    {
+        if (isRowStripe)
+        {
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = rowStripe;
         }
     }
 }
