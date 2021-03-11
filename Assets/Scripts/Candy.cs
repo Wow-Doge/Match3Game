@@ -9,8 +9,10 @@ public class Candy : MonoBehaviour
 
     public bool isColumnStripe;
     public bool isRowStripe;
+    public bool isColorBomb;
     public Sprite columnStripe;
     public Sprite rowStripe;
+    public Sprite colorBomb;
 
     private Vector2 firstTouch;
     private Vector2 finalTouch;
@@ -224,19 +226,22 @@ public class Candy : MonoBehaviour
 
     public void ColumnStripe()
     {
-        if (isColumnStripe)
-        {
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = columnStripe;
-        }
+        isColumnStripe = true;
+        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        mySprite.sprite = columnStripe;
     }
 
     public void RowStripe()
     {
-        if (isRowStripe)
-        {
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = rowStripe;
-        }
+        isRowStripe = true;
+        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        mySprite.sprite = rowStripe;
+    }
+
+    public void ColorBomb()
+    {
+        isColorBomb = true;
+        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        mySprite.sprite = colorBomb;
     }
 }

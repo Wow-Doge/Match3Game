@@ -98,10 +98,13 @@ MonoBehaviour:
   atColumn: 0
   atRow: 0
   isMatched: 0
-  isColumnBomb: 0
-  isRowBomb: 0
+  isColumnStripe: 0
+  isRowStripe: 0
+  isColorBomb: 0
   columnStripe: {fileID: 21300000, guid: 09168212994c62547aed28e4c0214469, type: 3}
   rowStripe: {fileID: 21300000, guid: f8c7d59de0ecdae4da7b8a43874e5107, type: 3}
+  colorBomb: {fileID: 21300000, guid: 30ccbc9fb14a35e4eb988f7c51e6bd48, type: 3}
+  otherCandy: {fileID: 0}
 --- !u!61 &-948053209394080206
 BoxCollider2D:
   m_ObjectHideFlags: 0
