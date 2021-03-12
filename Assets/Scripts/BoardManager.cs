@@ -26,6 +26,8 @@ public class BoardManager : MonoBehaviour
 
     public GameObject selectedCandy;
 
+    public List<List<GameObject>> matchList = new List<List<GameObject>>();
+
     private void Awake()
     {
         Instance = this;
@@ -104,8 +106,6 @@ public class BoardManager : MonoBehaviour
             }
         }
         AddToCurrentMatches();
-        GetChain();
-        DestroyCandy();
     }
 
     public void AddToCurrentMatches()
@@ -123,6 +123,24 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        GetChain();
+    }
+    public bool MatchedCandyNotInList()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (candyPosition[i, j].GetComponent<Candy>().isMatched && !currentMatches.Contains(candyPosition[i, j]))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     public void GetChain()
     {
@@ -136,6 +154,14 @@ public class BoardManager : MonoBehaviour
             {
                 GetRowCandies(candy.GetComponent<Candy>().atRow);
             }
+        }
+        if (MatchedCandyNotInList())
+        {
+            AddToCurrentMatches();
+        }
+        else
+        {
+            DestroyCandy();
         }
     }
     public bool IsSpecialCandyInList(List<GameObject> candiesList)
@@ -196,6 +222,7 @@ public class BoardManager : MonoBehaviour
                 {
                     if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
+
                         //if (IsMatchFive())
                         //{
                         //    if (selectedCandy != null)
@@ -216,39 +243,39 @@ public class BoardManager : MonoBehaviour
                         //    }
                         //}
 
-                        //if (IsMatchFour())
-                        //{
-                        //    if (selectedCandy != null)
-                        //    {
-                        //        GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
-                        //        if (selectedCandy.GetComponent<Candy>().isMatched)
-                        //        {
-                        //            selectedCandy.GetComponent<Candy>().isMatched = false;
-                        //            if (selectedCandy.transform.position.x == otherCandy.transform.position.x)
-                        //            {
-                        //                selectedCandy.GetComponent<Candy>().ColumnStripe();
-                        //            }
-                        //            else
-                        //            {
-                        //                selectedCandy.GetComponent<Candy>().RowStripe();
-                        //            }
-                        //            currentMatches.Remove(selectedCandy);
-                        //        }
-                        //        if (otherCandy.GetComponent<Candy>().isMatched)
-                        //        {
-                        //            otherCandy.GetComponent<Candy>().isMatched = false;
-                        //            if (selectedCandy.transform.position.x == otherCandy.transform.position.x)
-                        //            {
-                        //                otherCandy.GetComponent<Candy>().ColumnStripe();
-                        //            }
-                        //            else
-                        //            {
-                        //                otherCandy.GetComponent<Candy>().RowStripe();
-                        //            }
-                        //            currentMatches.Remove(otherCandy);
-                        //        }
-                        //    }
-                        //}
+                        if (IsPlayerMatchStripe())
+                        {
+                            if (selectedCandy != null)
+                            {
+                                GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
+                                if (selectedCandy.GetComponent<Candy>().isMatched)
+                                {
+                                    selectedCandy.GetComponent<Candy>().isMatched = false;
+                                    if (selectedCandy.transform.position.x == otherCandy.transform.position.x)
+                                    {
+                                        selectedCandy.GetComponent<Candy>().ColumnStripe();
+                                    }
+                                    else
+                                    {
+                                        selectedCandy.GetComponent<Candy>().RowStripe();
+                                    }
+                                    currentMatches.Remove(selectedCandy);
+                                }
+                                if (otherCandy.GetComponent<Candy>().isMatched)
+                                {
+                                    otherCandy.GetComponent<Candy>().isMatched = false;
+                                    if (selectedCandy.transform.position.x == otherCandy.transform.position.x)
+                                    {
+                                        otherCandy.GetComponent<Candy>().ColumnStripe();
+                                    }
+                                    else
+                                    {
+                                        otherCandy.GetComponent<Candy>().RowStripe();
+                                    }
+                                    currentMatches.Remove(otherCandy);
+                                }
+                            }
+                        }
                         currentMatches.Remove(candyPosition[i, j]);
                         Destroy(candyPosition[i, j]);
                         candyPosition[i, j] = null;
@@ -260,8 +287,9 @@ public class BoardManager : MonoBehaviour
         StartCoroutine(CollapseRow());
     }
 
-    private bool IsMatchFour()
+    private bool IsPlayerMatchStripe()
     {
+        List<GameObject> list = new List<GameObject>();
         int numHorizontal = 0;
         int numVertical = 0;
         Candy firstCandy = currentMatches[0].GetComponent<Candy>();
@@ -271,6 +299,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (candy.GetComponent<Candy>().atRow == firstCandy.atRow && candy.name == firstCandy.name)
                 {
+                    list.Add(candy);
                     numHorizontal++;
                 }
                 if (candy.GetComponent<Candy>().atColumn == firstCandy.atColumn && candy.name == firstCandy.name)
