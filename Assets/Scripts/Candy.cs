@@ -47,22 +47,29 @@ public class Candy : MonoBehaviour
         }
     }
 
-    private void OnMouseOver()
-    {
-        if (Input.GetMouseButtonDown(2))
-        {
-            isRowStripe = true;
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = rowStripe;
-        }
+    //For testing purpose
+    //private void OnMouseOver()
+    //{
+    //    if (Input.GetMouseButtonDown(2))
+    //    {
+    //        isRowStripe = true;
+    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+    //        mySprite.sprite = rowStripe;
+    //    }
+    //    if (Input.GetMouseButtonDown(2))
+    //    {
+    //        isColorBomb = true;
+    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+    //        mySprite.sprite = colorBomb;
+    //    }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            isColumnStripe = true;
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = columnStripe;
-        }
-    }
+    //    if (Input.GetMouseButtonDown(1))
+    //    {
+    //        isColumnStripe = true;
+    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+    //        mySprite.sprite = columnStripe;
+    //    }
+    //}
 
     private void CalculateDistance()
     {
@@ -171,6 +178,17 @@ public class Candy : MonoBehaviour
         }
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
+
+        if (thisCandy.GetComponent<Candy>().isColorBomb)
+        {
+            BoardManager.Instance.GetSameColorCandies(otherCandy);
+            thisCandy.GetComponent<Candy>().isMatched = true;
+        }
+        else if (otherCandy.GetComponent<Candy>().isColorBomb)
+        {
+            BoardManager.Instance.GetSameColorCandies(thisCandy);
+            otherCandy.GetComponent<Candy>().isMatched = true;
+        }
         BoardManager.Instance.ScanBoard();
     }
     public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
@@ -223,22 +241,19 @@ public class Candy : MonoBehaviour
             this.gameObject.transform.position = new Vector2(atColumn, atRow);
         }
     }
-
-    public void ColumnStripe()
+    public void ColumnStripeCandy()
     {
         isColumnStripe = true;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = columnStripe;
     }
-
-    public void RowStripe()
+    public void RowStripeCandy()
     {
         isRowStripe = true;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = rowStripe;
     }
-
-    public void ColorBomb()
+    public void ColorBombCandy()
     {
         isColorBomb = true;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
