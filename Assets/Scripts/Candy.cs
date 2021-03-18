@@ -10,9 +10,11 @@ public class Candy : MonoBehaviour
     public bool isColumnStripe;
     public bool isRowStripe;
     public bool isColorBomb;
+    public bool isSquareBomb;
     public Sprite columnStripe;
     public Sprite rowStripe;
     public Sprite colorBomb;
+    public Sprite squareBomb;
 
     private Vector2 firstTouch;
     private Vector2 finalTouch;
@@ -48,28 +50,38 @@ public class Candy : MonoBehaviour
     }
 
     //For testing purpose
-    //private void OnMouseOver()
-    //{
-    //    if (Input.GetMouseButtonDown(2))
-    //    {
-    //        isRowStripe = true;
-    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-    //        mySprite.sprite = rowStripe;
-    //    }
-    //    if (Input.GetMouseButtonDown(2))
-    //    {
-    //        isColorBomb = true;
-    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-    //        mySprite.sprite = colorBomb;
-    //    }
-
-    //    if (Input.GetMouseButtonDown(1))
-    //    {
-    //        isColumnStripe = true;
-    //        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-    //        mySprite.sprite = columnStripe;
-    //    }
-    //}
+    private void OnMouseOver()
+    {
+        //if (Input.GetMouseButtonDown(2))
+        //{
+        //    isRowStripe = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = rowStripe;
+        //}
+        //if (Input.GetMouseButtonDown(2))
+        //{
+        //    isColorBomb = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = colorBomb;
+        //}
+        //if (Input.GetMouseButtonDown(2))
+        //{
+        //    isColumnStripe = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = columnStripe;
+        //}
+        if (Input.GetMouseButtonDown(2))
+        {
+            isSquareBomb = true;
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = squareBomb;
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            isMatched = true;
+            BoardManager.Instance.ScanBoard();
+        }
+    }
 
     private void CalculateDistance()
     {
@@ -258,5 +270,11 @@ public class Candy : MonoBehaviour
         isColorBomb = true;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = colorBomb;
+    }
+    public void SquareBombCandy()
+    {
+        isSquareBomb = true;
+        SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        mySprite.sprite = squareBomb;
     }
 }

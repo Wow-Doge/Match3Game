@@ -101,9 +101,11 @@ MonoBehaviour:
   isColumnStripe: 0
   isRowStripe: 0
   isColorBomb: 0
+  isSquareBomb: 0
   columnStripe: {fileID: 21300000, guid: 423229ff2930b544ca1b49164ef71a22, type: 3}
   rowStripe: {fileID: 21300000, guid: 4fe870f72d61dc049afd0ec30111a898, type: 3}
   colorBomb: {fileID: 21300000, guid: 30ccbc9fb14a35e4eb988f7c51e6bd48, type: 3}
+  squareBomb: {fileID: 21300000, guid: 282295fac3e306248a3f49a3a5e0e840, type: 3}
   otherCandy: {fileID: 0}
 --- !u!61 &-3629184353065482656
 BoxCollider2D:
