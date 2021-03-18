@@ -52,6 +52,12 @@ public class Candy : MonoBehaviour
     //For testing purpose
     private void OnMouseOver()
     {
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    isColumnStripe = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = columnStripe;
+        //}
         //if (Input.GetMouseButtonDown(2))
         //{
         //    isRowStripe = true;
@@ -63,19 +69,14 @@ public class Candy : MonoBehaviour
         //    isColorBomb = true;
         //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         //    mySprite.sprite = colorBomb;
+        //    gameObject.name = "rainbow";
         //}
         //if (Input.GetMouseButtonDown(2))
         //{
-        //    isColumnStripe = true;
+        //    isSquareBomb = true;
         //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-        //    mySprite.sprite = columnStripe;
+        //    mySprite.sprite = squareBomb;
         //}
-        if (Input.GetMouseButtonDown(2))
-        {
-            isSquareBomb = true;
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = squareBomb;
-        }
         if (Input.GetMouseButtonDown(1))
         {
             isMatched = true;
@@ -256,23 +257,36 @@ public class Candy : MonoBehaviour
     public void ColumnStripeCandy()
     {
         isColumnStripe = true;
+        isRowStripe = false;
+        isColorBomb = false;
+        isSquareBomb = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = columnStripe;
     }
     public void RowStripeCandy()
     {
         isRowStripe = true;
+        isColumnStripe = false;
+        isColorBomb = false;
+        isSquareBomb = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = rowStripe;
     }
     public void ColorBombCandy()
     {
+        isColumnStripe = false;
+        isRowStripe = false;
         isColorBomb = true;
+        isSquareBomb = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        gameObject.name = "rainbow";
         mySprite.sprite = colorBomb;
     }
     public void SquareBombCandy()
     {
+        isColumnStripe = false;
+        isRowStripe = false;
+        isColorBomb = false;
         isSquareBomb = true;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = squareBomb;
