@@ -195,61 +195,71 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < column; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPosition[i, j] != null && candyPosition[i, j].GetComponent<Candy>().isMatched)
                 {
-                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    if (selectedCandy != null)
                     {
-                        if (selectedCandy != null)
+                        GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
+                        if (IsPlayerMatchColorBomb(selectedCandy))
                         {
-                            GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
-                            if (IsPlayerMatchColorBomb(selectedCandy))
-                            {
-                                selectedCandy.GetComponent<Candy>().isMatched = false;
-                                selectedCandy.GetComponent<Candy>().ColorBombCandy();
-                            }
+                            selectedCandy.GetComponent<Candy>().isMatched = false;
+                            selectedCandy.GetComponent<Candy>().ColorBombCandy();
+                        }
 
-                            if (IsPlayerMatchColorBomb(otherCandy))
-                            {
-                                otherCandy.GetComponent<Candy>().isMatched = false;
-                                otherCandy.GetComponent<Candy>().ColorBombCandy();
-                            }
+                        if (IsPlayerMatchColorBomb(otherCandy))
+                        {
+                            otherCandy.GetComponent<Candy>().isMatched = false;
+                            otherCandy.GetComponent<Candy>().ColorBombCandy();
+                        }
 
-                            if (IsPlayerMatchSquareBomb(selectedCandy))
-                            {
-                                selectedCandy.GetComponent<Candy>().isMatched = false;
-                                selectedCandy.GetComponent<Candy>().SquareBombCandy();
-                            }
+                        if (IsPlayerMatchSquareBomb(selectedCandy))
+                        {
+                            selectedCandy.GetComponent<Candy>().isMatched = false;
+                            selectedCandy.GetComponent<Candy>().SquareBombCandy();
+                        }
 
-                            if (IsPlayerMatchSquareBomb(otherCandy))
-                            {
-                                otherCandy.GetComponent<Candy>().isMatched = false;
-                                otherCandy.GetComponent<Candy>().SquareBombCandy();
-                            }
+                        if (IsPlayerMatchSquareBomb(otherCandy))
+                        {
+                            otherCandy.GetComponent<Candy>().isMatched = false;
+                            otherCandy.GetComponent<Candy>().SquareBombCandy();
+                        }
 
-                            if (IsPlayerMatchStripe(selectedCandy))
+                        if (IsPlayerMatchStripe(selectedCandy))
+                        {
+                            selectedCandy.GetComponent<Candy>().isMatched = false;
+                            if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
                             {
-                                selectedCandy.GetComponent<Candy>().isMatched = false;
-                                if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
-                                {
-                                    selectedCandy.GetComponent<Candy>().ColumnStripeCandy();
-                                }
-                                else if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
-                                {
-                                    selectedCandy.GetComponent<Candy>().RowStripeCandy();
-                                }
+                                selectedCandy.GetComponent<Candy>().ColumnStripeCandy();
                             }
-                            if (IsPlayerMatchStripe(otherCandy))
+                            else if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
                             {
-                                otherCandy.GetComponent<Candy>().isMatched = false;
-                                if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
-                                {
-                                    otherCandy.GetComponent<Candy>().RowStripeCandy();
-                                }
-                                else if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
-                                {
-                                    otherCandy.GetComponent<Candy>().ColumnStripeCandy();
-                                }
+                                selectedCandy.GetComponent<Candy>().RowStripeCandy();
                             }
+                        }
+                        if (IsPlayerMatchStripe(otherCandy))
+                        {
+                            otherCandy.GetComponent<Candy>().isMatched = false;
+                            if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
+                            {
+                                otherCandy.GetComponent<Candy>().RowStripeCandy();
+                            }
+                            else if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
+                            {
+                                otherCandy.GetComponent<Candy>().ColumnStripeCandy();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (IsPlayerMatchColorBomb(candyPosition[i, j]))
+                        {
+                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
+                            candyPosition[i, j].GetComponent<Candy>().ColorBombCandy();
+                        }
+                        if (IsPlayerMatchSquareBomb(candyPosition[i, j]))
+                        {
+                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
+                            candyPosition[i, j].GetComponent<Candy>().SquareBombCandy();
                         }
                     }
                 }
