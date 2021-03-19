@@ -71,12 +71,12 @@ public class Candy : MonoBehaviour
         //    mySprite.sprite = colorBomb;
         //    gameObject.name = "rainbow";
         //}
-        //if (Input.GetMouseButtonDown(2))
-        //{
-        //    isSquareBomb = true;
-        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-        //    mySprite.sprite = squareBomb;
-        //}
+        if (Input.GetMouseButtonDown(2))
+        {
+            isSquareBomb = true;
+            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+            mySprite.sprite = squareBomb;
+        }
         if (Input.GetMouseButtonDown(1))
         {
             isMatched = true;
@@ -117,60 +117,88 @@ public class Candy : MonoBehaviour
     {
         Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn - 1, atRow];
-        otherCandy.GetComponent<Candy>().atColumn += 1;
-        this.atColumn -= 1;
-        Vector2 target = new Vector2(atColumn, atRow);
-
-        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
-
-        if (!isMatched)
+        if (otherCandy != null)
         {
-            StartCoroutine(MoveBack(otherCandy));
+            otherCandy.GetComponent<Candy>().atColumn += 1;
+            this.atColumn -= 1;
+            Vector2 target = new Vector2(atColumn, atRow);
+
+            StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
+
+            if (!isMatched)
+            {
+                StartCoroutine(MoveBack(otherCandy));
+            }
+        }
+        else
+        {
+            BoardManager.Instance.currentState = GameState.Idling;
         }
     }
     private void MoveRight()
     {
         Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn + 1, atRow];
-        otherCandy.GetComponent<Candy>().atColumn -= 1;
-        this.atColumn += 1;
-        Vector2 target = new Vector2(atColumn, atRow);
-
-        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
-
-        if (!isMatched)
+        if (otherCandy != null)
         {
-            StartCoroutine(MoveBack(otherCandy));
+            otherCandy.GetComponent<Candy>().atColumn -= 1;
+            this.atColumn += 1;
+            Vector2 target = new Vector2(atColumn, atRow);
+
+            StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
+
+            if (!isMatched)
+            {
+                StartCoroutine(MoveBack(otherCandy));
+            }
+        }
+        else
+        {
+            BoardManager.Instance.currentState = GameState.Idling;
         }
     }
     private void MoveUp()
     {
         Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn, atRow + 1];
-        otherCandy.GetComponent<Candy>().atRow -= 1;
-        this.atRow += 1;
-        Vector2 target = new Vector2(atColumn, atRow);
-
-        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
-
-        if (!isMatched)
+        if (otherCandy != null)
         {
-            StartCoroutine(MoveBack(otherCandy));
+            otherCandy.GetComponent<Candy>().atRow -= 1;
+            this.atRow += 1;
+            Vector2 target = new Vector2(atColumn, atRow);
+
+            StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
+
+            if (!isMatched)
+            {
+                StartCoroutine(MoveBack(otherCandy));
+            }
+        }
+        else
+        {
+            BoardManager.Instance.currentState = GameState.Idling;
         }
     }
     private void MoveDown()
     {
         Vector2 current = new Vector2(atColumn, atRow);
         otherCandy = BoardManager.Instance.candyPosition[atColumn, atRow - 1];
-        otherCandy.GetComponent<Candy>().atRow += 1;
-        this.atRow -= 1;
-        Vector2 target = new Vector2(atColumn, atRow);
-
-        StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
-
-        if (!isMatched)
+        if (otherCandy != null)
         {
-            StartCoroutine(MoveBack(otherCandy));
+            otherCandy.GetComponent<Candy>().atRow += 1;
+            this.atRow -= 1;
+            Vector2 target = new Vector2(atColumn, atRow);
+
+            StartCoroutine(SwapObject(gameObject, otherCandy, current, target, lerpTime));
+
+            if (!isMatched)
+            {
+                StartCoroutine(MoveBack(otherCandy));
+            }
+        }
+        else
+        {
+            BoardManager.Instance.currentState = GameState.Idling;
         }
     }
 

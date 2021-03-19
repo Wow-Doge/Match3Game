@@ -260,3 +260,27 @@ MonoBehaviour:
   - {fileID: 7461044822135968363, guid: 9fd14cbe75ea39a4d81d052fd70c35e8, type: 3}
   currentMatches: []
   selectedCandy: {fileID: 0}
+  boardLayout:
+  - x: 0
+    y: 0
+    backgroundTileType: 1
+  - x: 1
+    y: 0
+    backgroundTileType: 1
+  - x: 2
+    y: 0
+    backgroundTileType: 1
+  - x: 3
+    y: 0
+    backgroundTileType: 1
+  - x: 3
+    y: 3
+    backgroundTileType: 0
+  - x: 3
+    y: 4
+    backgroundTileType: 0
+  - x: 3
+    y: 5
+    backgroundTileType: 0
+  breakableTilePrefab: {fileID: 1266080140825844998, guid: baabc3987de10a94a9fa598ba65a190a,
+    type: 3}

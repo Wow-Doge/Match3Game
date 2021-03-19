@@ -8,6 +8,23 @@ public enum GameState
     Moving
 }
 
+public enum BackgroundTileType
+{
+    Breakable,
+    Blank,
+    Frozen,
+    Lava,
+    Normal
+}
+
+[System.Serializable]
+public class TileType
+{
+    public int x;
+    public int y;
+    public BackgroundTileType backgroundTileType;
+}
+
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
@@ -22,6 +39,11 @@ public class BoardManager : MonoBehaviour
     public List<GameObject> currentMatches = new List<GameObject>();
     public GameObject selectedCandy;
 
+    public TileType[] boardLayout;
+    private bool[,] blankSpaces;
+
+    private BackgroundTile[,] breakableTiles;
+    public GameObject breakableTilePrefab;
     private void Awake()
     {
         Instance = this;
@@ -29,30 +51,53 @@ public class BoardManager : MonoBehaviour
     void Start()
     {
         candyPosition = new GameObject[row, column];
+        blankSpaces = new bool[row, column];
+        breakableTiles = new BackgroundTile[row, column];
         CreateBoard();
+    }
+
+    public void GenerateBackgroundTiles()
+    {
+        for (int i = 0; i < boardLayout.Length; i++)
+        {
+            if (boardLayout[i].backgroundTileType == BackgroundTileType.Breakable)
+            {
+                Vector2 tempPos = new Vector2(boardLayout[i].x, boardLayout[i].y);
+                GameObject tile = Instantiate(breakableTilePrefab, tempPos, Quaternion.identity);
+                breakableTiles[boardLayout[i].x, boardLayout[i].y] = tile.GetComponent<BackgroundTile>();
+            }
+            if (boardLayout[i].backgroundTileType == BackgroundTileType.Blank)
+            {
+                blankSpaces[boardLayout[i].x, boardLayout[i].y] = true;
+            }
+        }
     }
 
     public void CreateBoard()
     {
+        GenerateBackgroundTiles();
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
-                Vector2 tempPosition = new Vector2(i, j + offset);
-                int random = Random.Range(0, candyType.Count);
-
-                int maxIterations = 0;
-                while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
+                if (!blankSpaces[i, j])
                 {
-                    random = Random.Range(0, candyType.Count);
-                    maxIterations++;
+                    Vector2 tempPosition = new Vector2(i, j + offset);
+                    int random = Random.Range(0, candyType.Count);
+
+                    int maxIterations = 0;
+                    while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
+                    {
+                        random = Random.Range(0, candyType.Count);
+                        maxIterations++;
+                    }
+                    GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
+                    newCandy.GetComponent<Candy>().atRow = j;
+                    newCandy.GetComponent<Candy>().atColumn = i;
+                    newCandy.transform.parent = this.transform;
+                    newCandy.name = newCandy.name.Replace("(Clone)", "");
+                    candyPosition[i, j] = newCandy;
                 }
-                GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
-                newCandy.GetComponent<Candy>().atRow = j;
-                newCandy.GetComponent<Candy>().atColumn = i;
-                newCandy.transform.parent = this.transform;
-                newCandy.name = newCandy.name.Replace("(Clone)", "");
-                candyPosition[i, j] = newCandy;
             }
         }
     }
@@ -166,7 +211,6 @@ public class BoardManager : MonoBehaviour
             DestroyCandy();
         }
     }
-
     public void DestroyCandy()
     {
         if (IsMatchedOnBoard())
@@ -178,7 +222,6 @@ public class BoardManager : MonoBehaviour
             currentState = GameState.Idling;
         }
     }
-
     public bool IsMatchedOnBoard()
     {
         for (int i = 0; i < row; i++)
@@ -196,7 +239,6 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-     
     public IEnumerator MatchSpecialCandy()
     {
         yield return new WaitForSeconds(awaitTime);
@@ -299,6 +341,15 @@ public class BoardManager : MonoBehaviour
                 {
                     if (candyPosition[i, j].GetComponent<Candy>().isMatched)
                     {
+                        if (breakableTiles[i, j] != null)
+                        {
+                            breakableTiles[i, j].TakeDamage(1);
+                            if (breakableTiles[i, j].hitPoints <= 0)
+                            {
+                                Destroy(breakableTiles[i, j].gameObject);
+                                breakableTiles[i, j] = null;
+                            }
+                        }
                         currentMatches.Remove(candyPosition[i, j]);
                         Destroy(candyPosition[i, j]);
                         candyPosition[i, j] = null;
@@ -537,40 +588,68 @@ public class BoardManager : MonoBehaviour
         return horizontalList.Count == 5;
     }
 
-    public IEnumerator CollapseRow()
+    private IEnumerator CollapseRow()
     {
-        yield return new WaitForSeconds(awaitTime);
-        int nullCount = 0;
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
-                if (candyPosition[i, j] == null)
+                if (!blankSpaces[i, j] && candyPosition[i, j] == null)
                 {
-                    nullCount++;
-                }
-                else if (nullCount > 0)
-                {
-                    candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
-                    StartCoroutine(candyPosition[i, j].GetComponent<Candy>().CollapseCandy());
-                    candyPosition[i, j].GetComponent<Candy>().GetPosition();
-                    candyPosition[i, j] = null;
+                    for (int k = j + 1; k < column; k++)
+                    {
+                        if (candyPosition[i, k] != null)
+                        {
+                            candyPosition[i, k].GetComponent<Candy>().atRow = j;
+                            StartCoroutine(candyPosition[i, k].GetComponent<Candy>().CollapseCandy());
+                            candyPosition[i, k].GetComponent<Candy>().GetPosition();
+                            candyPosition[i, k] = null;
+                            break;
+                        }
+                    }
                 }
             }
-            nullCount = 0;
         }
         yield return new WaitForSeconds(awaitTime);
         selectedCandy = null;
         currentMatches.Clear();
         RefillBoard();
     }
+
+    //public IEnumerator CollapseRow()
+    //{
+    //    yield return new WaitForSeconds(awaitTime);
+    //    int nullCount = 0;
+    //    for (int i = 0; i < row; i++)
+    //    {
+    //        for (int j = 0; j < column; j++)
+    //        {
+    //            if (candyPosition[i, j] == null)
+    //            {
+    //                nullCount++;
+    //            }
+    //            else if (nullCount > 0)
+    //            {
+    //                candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
+    //                StartCoroutine(candyPosition[i, j].GetComponent<Candy>().CollapseCandy());
+    //                candyPosition[i, j].GetComponent<Candy>().GetPosition();
+    //                candyPosition[i, j] = null;
+    //            }
+    //        }
+    //        nullCount = 0;
+    //    }
+    //    yield return new WaitForSeconds(awaitTime);
+    //    selectedCandy = null;
+    //    currentMatches.Clear();
+    //    RefillBoard();
+    //}
     public void RefillBoard()
     {
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
-                if (candyPosition[i, j] == null)
+                if (candyPosition[i, j] == null && !blankSpaces[i, j])
                 {
                     Vector2 tempPosition = new Vector2(i, j + offset);
                     int random = Random.Range(0, candyType.Count);
@@ -590,18 +669,24 @@ public class BoardManager : MonoBehaviour
     {
         if (column > 1)
         {
-            if (candyPosition[column - 1, row].name == candy.name &&
-                candyPosition[column - 2, row].name == candy.name)
+            if (candyPosition[column - 1, row] != null && candyPosition[column - 2, row] != null)
             {
-                return true;
+                if (candyPosition[column - 1, row].name == candy.name &&
+                    candyPosition[column - 2, row].name == candy.name)
+                {
+                    return true;
+                }
             }
         }
         if (row > 1)
         {
-            if (candyPosition[column, row - 1].name == candy.name &&
-                candyPosition[column, row - 2].name == candy.name)
+            if (candyPosition[column, row - 1] != null && candyPosition[column, row - 2] != null)
             {
-                return true;
+                if (candyPosition[column, row - 1].name == candy.name &&
+                    candyPosition[column, row - 2].name == candy.name)
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -654,10 +739,14 @@ public class BoardManager : MonoBehaviour
                 {
                     if (i >= 0 && i < column && j >= 0 && j < row)
                     {
-                        candyPosition[i, j].GetComponent<Candy>().isMatched = true;
+                        if (candyPosition[i, j] != null)
+                        {
+                            candyPosition[i, j].GetComponent<Candy>().isMatched = true;
+                        }
                     }
                 }
             }
         }
     }
-}
+    }
+
