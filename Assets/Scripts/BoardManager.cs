@@ -663,6 +663,11 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        if (IsDeadLocked())
+        {
+            Debug.Log("dead locked");
+            ShuffleBoard();
+        }
         ScanBoard();
     }
     public bool CheckMatchInit(int column, int row, GameObject candy)
@@ -748,5 +753,125 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+
+    private void SwitchPieces(int column, int row, Vector2 direction)
+    {
+        GameObject holder = candyPosition[column + (int)direction.x, row + (int)direction.y] as GameObject;
+        candyPosition[column + (int)direction.x, row + (int)direction.y] = candyPosition[column, row];
+        candyPosition[column, row] = holder;
     }
+    private bool CheckForMatches()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (i < row - 2)
+                    {
+                        if (candyPosition[i + 1, j] != null && candyPosition[i + 2, j] != null)
+                        {
+                            if (candyPosition[i + 1, j].name == candyPosition[i, j].name && candyPosition[i + 2, j].name == candyPosition[i, j].name)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    if (j < column - 2)
+                    {
+                        if (candyPosition[i, j + 1] != null && candyPosition[i, j + 2] != null)
+                        {
+                            if (candyPosition[i, j + 1].name == candyPosition[i, j].name && candyPosition[i, j + 2].name == candyPosition[i, j].name)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    private bool SwitchAndCheck(int column, int row, Vector2 direction)
+    {
+        SwitchPieces(column, row, direction);
+        if (CheckForMatches())
+        {
+            SwitchPieces(column, row, direction);
+            return true;
+        }
+        SwitchPieces(column, row, direction);
+        return false;
+    }
+    private bool IsDeadLocked()
+    {
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    if (i < row - 1)
+                    {
+                        if (SwitchAndCheck(i, j, Vector2.right))
+                        {
+                            return false;
+                        }
+                    }
+                    if (j < column - 1)
+                    {
+                        if (SwitchAndCheck(i, j, Vector2.up))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void ShuffleBoard()
+    {
+        List<GameObject> newBoard = new List<GameObject>();
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (candyPosition[i, j] != null)
+                {
+                    newBoard.Add(candyPosition[i, j]);
+                }
+            }
+        }
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                if (!blankSpaces[i, j])
+                {
+                    int pieceToUse = Random.Range(0, newBoard.Count);
+                    int random = Random.Range(0, candyType.Count);
+                    int maxIterations = 0;
+                    while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
+                    {
+                        random = Random.Range(0, candyType.Count);
+                        maxIterations++;
+                    }
+                    Candy candy = newBoard[pieceToUse].GetComponent<Candy>();
+                    maxIterations = 0;
+                    candy.atColumn = i;
+                    candy.atRow = j;
+                    candyPosition[i, j] = newBoard[pieceToUse];
+                    newBoard.Remove(newBoard[pieceToUse]);
+                }
+            }
+        }
+        if (IsDeadLocked())
+        {
+            ShuffleBoard();
+        }
+    }
+}
 
