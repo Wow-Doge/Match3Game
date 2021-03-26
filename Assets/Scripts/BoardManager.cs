@@ -29,8 +29,8 @@ public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
     public GameState currentState = GameState.Idling;
-    public int column;
-    public int row;
+    public int boardHeight;
+    public int boardWidth;
     public int offset;
     public float awaitTime = 0.25f;
 
@@ -50,9 +50,9 @@ public class BoardManager : MonoBehaviour
     }
     void Start()
     {
-        candyPosition = new GameObject[row, column];
-        blankSpaces = new bool[row, column];
-        breakableTiles = new BackgroundTile[row, column];
+        candyPosition = new GameObject[boardWidth, boardHeight];
+        blankSpaces = new bool[boardWidth, boardHeight];
+        breakableTiles = new BackgroundTile[boardWidth, boardHeight];
         CreateBoard();
     }
 
@@ -76,9 +76,9 @@ public class BoardManager : MonoBehaviour
     public void CreateBoard()
     {
         GenerateBackgroundTiles();
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (!blankSpaces[i, j])
                 {
@@ -100,18 +100,22 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        if (IsDeadLocked())
+        {
+            ShuffleBoard();
+        }
     }
 
     public void ScanBoard()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 GameObject currentCandy = candyPosition[i, j];
                 if (currentCandy != null)
                 {
-                    if (i > 0 && i < row - 1)
+                    if (i > 0 && i < boardWidth - 1)
                     {
                         GameObject leftCandy = candyPosition[i - 1, j];
                         GameObject rightCandy = candyPosition[i + 1, j];
@@ -126,7 +130,7 @@ public class BoardManager : MonoBehaviour
                         }
                     }
 
-                    if (j > 0 && j < column - 1)
+                    if (j > 0 && j < boardHeight - 1)
                     {
                         GameObject downCandy = candyPosition[i, j - 1];
                         GameObject upCandy = candyPosition[i, j + 1];
@@ -147,9 +151,9 @@ public class BoardManager : MonoBehaviour
     }
     public void AddToCurrentMatches()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -164,9 +168,9 @@ public class BoardManager : MonoBehaviour
     }
     public bool MatchedCandyNotInList()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -224,9 +228,9 @@ public class BoardManager : MonoBehaviour
     }
     public bool IsMatchedOnBoard()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -242,9 +246,9 @@ public class BoardManager : MonoBehaviour
     public IEnumerator MatchSpecialCandy()
     {
         yield return new WaitForSeconds(awaitTime);
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null && candyPosition[i, j].GetComponent<Candy>().isMatched)
                 {
@@ -333,9 +337,9 @@ public class BoardManager : MonoBehaviour
 
     private void RemoveMatchedCandies()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -590,13 +594,13 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator CollapseRow()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (!blankSpaces[i, j] && candyPosition[i, j] == null)
                 {
-                    for (int k = j + 1; k < column; k++)
+                    for (int k = j + 1; k < boardHeight; k++)
                     {
                         if (candyPosition[i, k] != null)
                         {
@@ -620,9 +624,9 @@ public class BoardManager : MonoBehaviour
     //{
     //    yield return new WaitForSeconds(awaitTime);
     //    int nullCount = 0;
-    //    for (int i = 0; i < row; i++)
+    //    for (int i = 0; i < boardWidth; i++)
     //    {
-    //        for (int j = 0; j < column; j++)
+    //        for (int j = 0; j < boardHeight; j++)
     //        {
     //            if (candyPosition[i, j] == null)
     //            {
@@ -645,9 +649,9 @@ public class BoardManager : MonoBehaviour
     //}
     public void RefillBoard()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] == null && !blankSpaces[i, j])
                 {
@@ -665,30 +669,29 @@ public class BoardManager : MonoBehaviour
         }
         if (IsDeadLocked())
         {
-            Debug.Log("dead locked");
             ShuffleBoard();
         }
         ScanBoard();
     }
-    public bool CheckMatchInit(int column, int row, GameObject candy)
+    public bool CheckMatchInit(int boardHeight, int boardWidth, GameObject candy)
     {
-        if (column > 1)
+        if (boardHeight > 1)
         {
-            if (candyPosition[column - 1, row] != null && candyPosition[column - 2, row] != null)
+            if (candyPosition[boardHeight - 1, boardWidth] != null && candyPosition[boardHeight - 2, boardWidth] != null)
             {
-                if (candyPosition[column - 1, row].name == candy.name &&
-                    candyPosition[column - 2, row].name == candy.name)
+                if (candyPosition[boardHeight - 1, boardWidth].name == candy.name &&
+                    candyPosition[boardHeight - 2, boardWidth].name == candy.name)
                 {
                     return true;
                 }
             }
         }
-        if (row > 1)
+        if (boardWidth > 1)
         {
-            if (candyPosition[column, row - 1] != null && candyPosition[column, row - 2] != null)
+            if (candyPosition[boardHeight, boardWidth - 1] != null && candyPosition[boardHeight, boardWidth - 2] != null)
             {
-                if (candyPosition[column, row - 1].name == candy.name &&
-                    candyPosition[column, row - 2].name == candy.name)
+                if (candyPosition[boardHeight, boardWidth - 1].name == candy.name &&
+                    candyPosition[boardHeight, boardWidth - 2].name == candy.name)
                 {
                     return true;
                 }
@@ -698,7 +701,7 @@ public class BoardManager : MonoBehaviour
     }
     private void GetColumnCandies(int boardColumn)
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardHeight; i++)
         {
             if (candyPosition[boardColumn, i] != null && !currentMatches.Contains(candyPosition[boardColumn, i]))
             {
@@ -708,7 +711,7 @@ public class BoardManager : MonoBehaviour
     }
     private void GetRowCandies(int boardRow)
     {
-        for (int i = 0; i < column; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
             if (candyPosition[i, boardRow] != null && !currentMatches.Contains(candyPosition[i, boardRow]))
             {
@@ -718,9 +721,9 @@ public class BoardManager : MonoBehaviour
     }
     public void GetSameColorCandies(GameObject candy)
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -742,7 +745,7 @@ public class BoardManager : MonoBehaviour
             {
                 for (int j = y - 1; j <= y + 1; j++)
                 {
-                    if (i >= 0 && i < column && j >= 0 && j < row)
+                    if (i >= 0 && i < boardWidth && j >= 0 && j < boardHeight)
                     {
                         if (candyPosition[i, j] != null)
                         {
@@ -754,21 +757,21 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void SwitchPieces(int column, int row, Vector2 direction)
+    private void SwitchPieces(int boardHeight, int boardWidth, Vector2 direction)
     {
-        GameObject holder = candyPosition[column + (int)direction.x, row + (int)direction.y] as GameObject;
-        candyPosition[column + (int)direction.x, row + (int)direction.y] = candyPosition[column, row];
-        candyPosition[column, row] = holder;
+        GameObject holder = candyPosition[boardHeight + (int)direction.x, boardWidth + (int)direction.y] as GameObject;
+        candyPosition[boardHeight + (int)direction.x, boardWidth + (int)direction.y] = candyPosition[boardHeight, boardWidth];
+        candyPosition[boardHeight, boardWidth] = holder;
     }
     private bool CheckForMatches()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
-                    if (i < row - 2)
+                    if (i < boardWidth - 2)
                     {
                         if (candyPosition[i + 1, j] != null && candyPosition[i + 2, j] != null)
                         {
@@ -778,7 +781,7 @@ public class BoardManager : MonoBehaviour
                             }
                         }
                     }
-                    if (j < column - 2)
+                    if (j < boardHeight - 2)
                     {
                         if (candyPosition[i, j + 1] != null && candyPosition[i, j + 2] != null)
                         {
@@ -793,37 +796,47 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    private bool SwitchAndCheck(int column, int row, Vector2 direction)
+    private bool SwitchAndCheck(int boardHeight, int boardWidth, Vector2 direction)
     {
-        SwitchPieces(column, row, direction);
+        SwitchPieces(boardHeight, boardWidth, direction);
         if (CheckForMatches())
         {
-            SwitchPieces(column, row, direction);
+            SwitchPieces(boardHeight, boardWidth, direction);
             return true;
         }
-        SwitchPieces(column, row, direction);
+        SwitchPieces(boardHeight, boardWidth, direction);
         return false;
     }
     private bool IsDeadLocked()
     {
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
-                    if (i < row - 1)
+                    if (candyPosition[i, j].name == "rainbow")
                     {
-                        if (SwitchAndCheck(i, j, Vector2.right))
+                        return false;
+                    }
+                    if (i < boardWidth - 1)
+                    {
+                        if (candyPosition[i + 1, j] != null)
                         {
-                            return false;
+                            if (SwitchAndCheck(i, j, Vector2.right))
+                            {
+                                return false;
+                            }
                         }
                     }
-                    if (j < column - 1)
+                    if (j < boardHeight - 1)
                     {
-                        if (SwitchAndCheck(i, j, Vector2.up))
+                        if (candyPosition[i, j + 1] != null)
                         {
-                            return false;
+                            if (SwitchAndCheck(i, j, Vector2.up))
+                            {
+                                return false;
+                            }
                         }
                     }
                 }
@@ -835,9 +848,9 @@ public class BoardManager : MonoBehaviour
     private void ShuffleBoard()
     {
         List<GameObject> newBoard = new List<GameObject>();
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (candyPosition[i, j] != null)
                 {
@@ -845,9 +858,9 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        for (int i = 0; i < row; i++)
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < boardHeight; j++)
             {
                 if (!blankSpaces[i, j])
                 {
@@ -865,6 +878,7 @@ public class BoardManager : MonoBehaviour
                     candy.atRow = j;
                     candyPosition[i, j] = newBoard[pieceToUse];
                     newBoard.Remove(newBoard[pieceToUse]);
+                    candy.transform.position = new Vector2(i, j);
                 }
             }
         }

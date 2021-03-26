@@ -71,17 +71,17 @@ public class Candy : MonoBehaviour
         //    mySprite.sprite = colorBomb;
         //    gameObject.name = "rainbow";
         //}
-        if (Input.GetMouseButtonDown(2))
-        {
-            isSquareBomb = true;
-            SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
-            mySprite.sprite = squareBomb;
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            isMatched = true;
-            BoardManager.Instance.ScanBoard();
-        }
+        //if (Input.GetMouseButtonDown(2))
+        //{
+        //    isSquareBomb = true;
+        //    SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
+        //    mySprite.sprite = squareBomb;
+        //}
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    isMatched = true;
+        //    BoardManager.Instance.ScanBoard();
+        //}
     }
 
     private void CalculateDistance()
@@ -102,14 +102,14 @@ public class Candy : MonoBehaviour
         {
             if (firstTouch.x > finalTouch.x && atColumn > 0)
                 MoveLeft();
-            if (firstTouch.x < finalTouch.x && atColumn < BoardManager.Instance.column - 1)
+            if (firstTouch.x < finalTouch.x && atColumn < BoardManager.Instance.boardWidth - 1)
                 MoveRight();
         }
         else
         {
             if (firstTouch.y > finalTouch.y && atRow > 0)
                 MoveDown();
-            if (firstTouch.y < finalTouch.y && atRow < BoardManager.Instance.row - 1)
+            if (firstTouch.y < finalTouch.y && atRow < BoardManager.Instance.boardHeight - 1)
                 MoveUp();
         }
     }
