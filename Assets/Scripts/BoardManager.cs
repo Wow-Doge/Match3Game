@@ -47,6 +47,8 @@ public class BoardManager : MonoBehaviour
 
     public int basePieceValue = 20;
     private int streakValue = 0;
+
+    public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
     private void Awake()
     {
         Instance = this;
@@ -252,6 +254,7 @@ public class BoardManager : MonoBehaviour
     }
     public IEnumerator MatchSpecialCandy()
     {
+        CountCandyColor();
         yield return new WaitForSeconds(awaitTime);
         for (int i = 0; i < boardWidth; i++)
         {
@@ -867,6 +870,50 @@ public class BoardManager : MonoBehaviour
         {
             ShuffleBoard();
         }
+    }
+
+    private Dictionary<string, List<GameObject>> CreateDictionary()
+    {
+        foreach (GameObject color in candyType)
+        {
+            List<GameObject> colorList = new List<GameObject>();
+            dict.Add(color.name, colorList);
+        }
+        return dict;
+    }
+
+    private void AddCandyToDictionary()
+    {
+        foreach (GameObject candy in currentMatches)
+        {
+            foreach (KeyValuePair<string, List<GameObject>> pair in dict)
+            {
+                if (candy.name == pair.Key)
+                {
+                    pair.Value.Add(candy);
+                }
+            }
+        }
+    }
+
+    private void ClearDictionary()
+    {
+        dict.Clear();
+    }
+
+    private void CountCandyColor()
+    {
+        CreateDictionary();
+        AddCandyToDictionary();
+        foreach (var pair in dict)
+        {
+            int a = pair.Value.Count;
+            if (a > 0)
+            {
+                Debug.Log("color: " + pair.Key + " / " + "count: " + a);
+            }
+        }
+        ClearDictionary();
     }
 }
 
