@@ -44,6 +44,9 @@ public class BoardManager : MonoBehaviour
 
     private BackgroundTile[,] breakableTiles;
     public GameObject breakableTilePrefab;
+
+    public int basePieceValue = 20;
+    private int streakValue = 0;
     private void Awake()
     {
         Instance = this;
@@ -146,6 +149,10 @@ public class BoardManager : MonoBehaviour
                     }
                 }
             }
+        }
+        if (!IsMatchedOnBoard())
+        {
+            streakValue = 0;
         }
         AddToCurrentMatches();
     }
@@ -337,6 +344,7 @@ public class BoardManager : MonoBehaviour
 
     private void RemoveMatchedCandies()
     {
+        streakValue++;
         for (int i = 0; i < boardWidth; i++)
         {
             for (int j = 0; j < boardHeight; j++)
@@ -354,6 +362,7 @@ public class BoardManager : MonoBehaviour
                                 breakableTiles[i, j] = null;
                             }
                         }
+                        ScoreManager.Instance.IncreaseScore(basePieceValue * streakValue);
                         currentMatches.Remove(candyPosition[i, j]);
                         Destroy(candyPosition[i, j]);
                         candyPosition[i, j] = null;
@@ -620,33 +629,6 @@ public class BoardManager : MonoBehaviour
         RefillBoard();
     }
 
-    //public IEnumerator CollapseRow()
-    //{
-    //    yield return new WaitForSeconds(awaitTime);
-    //    int nullCount = 0;
-    //    for (int i = 0; i < boardWidth; i++)
-    //    {
-    //        for (int j = 0; j < boardHeight; j++)
-    //        {
-    //            if (candyPosition[i, j] == null)
-    //            {
-    //                nullCount++;
-    //            }
-    //            else if (nullCount > 0)
-    //            {
-    //                candyPosition[i, j].GetComponent<Candy>().atRow -= nullCount;
-    //                StartCoroutine(candyPosition[i, j].GetComponent<Candy>().CollapseCandy());
-    //                candyPosition[i, j].GetComponent<Candy>().GetPosition();
-    //                candyPosition[i, j] = null;
-    //            }
-    //        }
-    //        nullCount = 0;
-    //    }
-    //    yield return new WaitForSeconds(awaitTime);
-    //    selectedCandy = null;
-    //    currentMatches.Clear();
-    //    RefillBoard();
-    //}
     public void RefillBoard()
     {
         for (int i = 0; i < boardWidth; i++)
@@ -763,7 +745,7 @@ public class BoardManager : MonoBehaviour
         candyPosition[boardHeight + (int)direction.x, boardWidth + (int)direction.y] = candyPosition[boardHeight, boardWidth];
         candyPosition[boardHeight, boardWidth] = holder;
     }
-    private bool CheckForMatches()
+    private bool CheckPossibleMatches()
     {
         for (int i = 0; i < boardWidth; i++)
         {
@@ -799,7 +781,7 @@ public class BoardManager : MonoBehaviour
     private bool SwitchAndCheck(int boardHeight, int boardWidth, Vector2 direction)
     {
         SwitchPieces(boardHeight, boardWidth, direction);
-        if (CheckForMatches())
+        if (CheckPossibleMatches())
         {
             SwitchPieces(boardHeight, boardWidth, direction);
             return true;
@@ -844,7 +826,6 @@ public class BoardManager : MonoBehaviour
         }
         return true;
     }
-
     private void ShuffleBoard()
     {
         List<GameObject> newBoard = new List<GameObject>();
