@@ -59,6 +59,7 @@ public class BoardManager : MonoBehaviour
         blankSpaces = new bool[boardWidth, boardHeight];
         breakableTiles = new BackgroundTile[boardWidth, boardHeight];
         CreateBoard();
+        CreateDictionary();
     }
 
     public void GenerateBackgroundTiles()
@@ -881,7 +882,6 @@ public class BoardManager : MonoBehaviour
         }
         return dict;
     }
-
     private void AddCandyToDictionary()
     {
         foreach (GameObject candy in currentMatches)
@@ -895,25 +895,17 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
     private void ClearDictionary()
     {
-        dict.Clear();
+        foreach (var candyColor in dict)
+        {
+            candyColor.Value.Clear();
+        }
     }
-
     private void CountCandyColor()
     {
-        CreateDictionary();
         AddCandyToDictionary();
-        foreach (var pair in dict)
-        {
-            int a = pair.Value.Count;
-            if (a > 0)
-            {
-                Debug.Log("color: " + pair.Key + " / " + "count: " + a);
-            }
-        }
-        ClearDictionary();
+        ScoreManager.Instance.ToText();
     }
 }
 
