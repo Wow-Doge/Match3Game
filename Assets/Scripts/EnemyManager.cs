@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class EnemyManager : MonoBehaviour
 {
     public int maxHealth = 3000;
-    public int currentHealth;
+    private int currentHealth;
+    public int charge;
 
     private Image image;
 
@@ -22,25 +23,18 @@ public class EnemyManager : MonoBehaviour
         image = GetComponent<Image>();
     }
 
-    void Update()
-    {
-        
-    }
-
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        ReduceAlpha();
+        if (currentHealth < 0)
+        {
+            EnemyDead();
+        }
     }
 
-    void ReduceAlpha()
+    void EnemyDead()
     {
-        Color color = image.color;
-        Debug.Log(currentHealth);
-        float newAlpha = ((3000 - (3000 - currentHealth)) / 3000);
-        color.a = newAlpha;
-        Debug.Log("newAlpha: = " + newAlpha);
-        Debug.Log("alpha: " + color.a);
-        image.color = new Color(color.r, color.g, color.b, color.a);
+        Debug.Log("enemy dead");
+        //Destroy(gameObject);
     }
 }

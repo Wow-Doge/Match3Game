@@ -47,6 +47,7 @@ public class BoardManager : MonoBehaviour
 
     public int basePieceValue = 20;
     private int streakValue = 0;
+    private int totalScore;
 
     public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
     private void Awake()
@@ -174,7 +175,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        GetChain();
+        AddChain();
     }
     public bool MatchedCandyNotInList()
     {
@@ -193,23 +194,23 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    public void GetChain()
+    public void AddChain()
     {
         foreach (GameObject candy in currentMatches)
         {
-            if (candy.GetComponent<Candy>().isColumnStripe)
+            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.ColumnStripe)
             {
                 GetColumnCandies(candy.GetComponent<Candy>().atColumn);
             }
-            if (candy.GetComponent<Candy>().isRowStripe)
+            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.RowStripe)
             {
                 GetRowCandies(candy.GetComponent<Candy>().atRow);
             }
-            if (candy.GetComponent<Candy>().isSquareBomb)
+            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.SquareBomb)
             {
                 GetSquareCandies(candy);
             }
-            if (candy.GetComponent<Candy>().isColorBomb)
+            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.ColorBomb)
             {
                 //not working as intended
                 //GetSameColorCandies(candyType[Random.Range(0, candyType.Count)]);
@@ -268,27 +269,22 @@ public class BoardManager : MonoBehaviour
                         GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
                         if (IsPlayerMatchColorBomb(selectedCandy))
                         {
-                            selectedCandy.GetComponent<Candy>().isMatched = false;
                             selectedCandy.GetComponent<Candy>().ColorBombCandy();
                         }
                         if (IsPlayerMatchColorBomb(otherCandy))
                         {
-                            otherCandy.GetComponent<Candy>().isMatched = false;
                             otherCandy.GetComponent<Candy>().ColorBombCandy();
                         }
                         if (IsPlayerMatchSquareBomb(selectedCandy))
                         {
-                            selectedCandy.GetComponent<Candy>().isMatched = false;
                             selectedCandy.GetComponent<Candy>().SquareBombCandy();
                         }
                         if (IsPlayerMatchSquareBomb(otherCandy))
                         {
-                            otherCandy.GetComponent<Candy>().isMatched = false;
                             otherCandy.GetComponent<Candy>().SquareBombCandy();
                         }
                         if (IsPlayerMatchStripe(selectedCandy))
                         {
-                            selectedCandy.GetComponent<Candy>().isMatched = false;
                             if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
                             {
                                 selectedCandy.GetComponent<Candy>().ColumnStripeCandy();
@@ -300,7 +296,6 @@ public class BoardManager : MonoBehaviour
                         }
                         if (IsPlayerMatchStripe(otherCandy))
                         {
-                            otherCandy.GetComponent<Candy>().isMatched = false;
                             if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
                             {
                                 otherCandy.GetComponent<Candy>().RowStripeCandy();
@@ -315,27 +310,22 @@ public class BoardManager : MonoBehaviour
                     {
                         if (IsBoardMatchColumnColorBomb(candyPosition[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
                             candyPosition[i, j].GetComponent<Candy>().ColorBombCandy();
                         }
                         if (IsBoardMatchRowColorBomb(candyPosition[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
                             candyPosition[i, j].GetComponent<Candy>().ColorBombCandy();
                         }
                         if (IsPlayerMatchSquareBomb(candyPosition[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
                             candyPosition[i, j].GetComponent<Candy>().SquareBombCandy();
                         }
                         if (IsBoardMatchColumnStripe(candyPosition[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
                             candyPosition[i, j].GetComponent<Candy>().ColumnStripeCandy();
                         }
                         if (IsBoardMatchRowStripe(candyPosition[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = false;
                             candyPosition[i, j].GetComponent<Candy>().RowStripeCandy();
                         }
                     }
@@ -348,6 +338,7 @@ public class BoardManager : MonoBehaviour
 
     private void RemoveMatchedCandies()
     {
+        totalScore = 0;
         streakValue++;
         for (int i = 0; i < boardWidth; i++)
         {
@@ -366,7 +357,7 @@ public class BoardManager : MonoBehaviour
                                 breakableTiles[i, j] = null;
                             }
                         }
-                        ScoreManager.Instance.IncreaseScore(basePieceValue * streakValue);
+                        totalScore += basePieceValue * streakValue;
                         currentMatches.Remove(candyPosition[i, j]);
                         Destroy(candyPosition[i, j]);
                         candyPosition[i, j] = null;
@@ -374,6 +365,8 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        ScoreManager.Instance.IncreaseScore(totalScore);
+        EnemyManager.Instance.TakeDamage(totalScore);
         StartCoroutine(CollapseRow());
     }
 

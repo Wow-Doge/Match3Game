@@ -7,10 +7,6 @@ public class Candy : MonoBehaviour
     public int atRow;
     public bool isMatched = false;
 
-    public bool isColumnStripe;
-    public bool isRowStripe;
-    public bool isColorBomb;
-    public bool isSquareBomb;
     public Sprite columnStripe;
     public Sprite rowStripe;
     public Sprite colorBomb;
@@ -25,11 +21,19 @@ public class Candy : MonoBehaviour
     private float lerpTime = 0.2f;
 
     public GameObject otherCandy;
+    public enum SpecialCandy
+    {
+        None,
+        ColumnStripe,
+        RowStripe,
+        SquareBomb,
+        ColorBomb
+    }
+    public SpecialCandy specialCandy;
 
     public void Start()
     {
-        isColumnStripe = false;
-        isRowStripe = false;
+        specialCandy = SpecialCandy.None;
         StartCoroutine(CollapseCandy());
     }
 
@@ -220,12 +224,12 @@ public class Candy : MonoBehaviour
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
 
-        if (thisCandy.GetComponent<Candy>().isColorBomb)
+        if (thisCandy.GetComponent<Candy>().specialCandy == SpecialCandy.ColorBomb)
         {
             BoardManager.Instance.GetSameColorCandies(otherCandy);
             thisCandy.GetComponent<Candy>().isMatched = true;
         }
-        else if (otherCandy.GetComponent<Candy>().isColorBomb)
+        else if (otherCandy.GetComponent<Candy>().specialCandy == SpecialCandy.ColorBomb)
         {
             BoardManager.Instance.GetSameColorCandies(thisCandy);
             otherCandy.GetComponent<Candy>().isMatched = true;
@@ -284,39 +288,31 @@ public class Candy : MonoBehaviour
     }
     public void ColumnStripeCandy()
     {
-        isColumnStripe = true;
-        isRowStripe = false;
-        isColorBomb = false;
-        isSquareBomb = false;
+        isMatched = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = columnStripe;
+        specialCandy = SpecialCandy.ColumnStripe;
     }
     public void RowStripeCandy()
     {
-        isRowStripe = true;
-        isColumnStripe = false;
-        isColorBomb = false;
-        isSquareBomb = false;
+        isMatched = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = rowStripe;
+        specialCandy = SpecialCandy.RowStripe;
     }
     public void ColorBombCandy()
     {
-        isColumnStripe = false;
-        isRowStripe = false;
-        isColorBomb = true;
-        isSquareBomb = false;
+        isMatched = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         gameObject.name = "rainbow";
         mySprite.sprite = colorBomb;
+        specialCandy = SpecialCandy.ColorBomb;
     }
     public void SquareBombCandy()
     {
-        isColumnStripe = false;
-        isRowStripe = false;
-        isColorBomb = false;
-        isSquareBomb = true;
+        isMatched = false;
         SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
         mySprite.sprite = squareBomb;
+        specialCandy = SpecialCandy.SquareBomb;
     }
 }
