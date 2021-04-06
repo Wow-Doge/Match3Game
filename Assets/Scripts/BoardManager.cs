@@ -92,7 +92,6 @@ public class BoardManager : MonoBehaviour
                 {
                     Vector2 tempPosition = new Vector2(i, j + offset);
                     int random = Random.Range(0, candyType.Count);
-
                     int maxIterations = 0;
                     while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
                     {
@@ -119,8 +118,8 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < boardHeight; j++)
             {
-                GameObject currentCandy = candyPosition[i, j];
-                if (currentCandy != null)
+                GameObject thisCandy = candyPosition[i, j];
+                if (thisCandy != null)
                 {
                     if (i > 0 && i < boardWidth - 1)
                     {
@@ -128,9 +127,9 @@ public class BoardManager : MonoBehaviour
                         GameObject rightCandy = candyPosition[i + 1, j];
                         if (leftCandy != null && rightCandy != null)
                         {
-                            if (leftCandy.name == currentCandy.name && rightCandy.name == currentCandy.name)
+                            if (leftCandy.name == thisCandy.name && rightCandy.name == thisCandy.name)
                             {
-                                currentCandy.GetComponent<Candy>().isMatched = true;
+                                thisCandy.GetComponent<Candy>().isMatched = true;
                                 leftCandy.GetComponent<Candy>().isMatched = true;
                                 rightCandy.GetComponent<Candy>().isMatched = true;
                             }
@@ -143,9 +142,9 @@ public class BoardManager : MonoBehaviour
                         GameObject upCandy = candyPosition[i, j + 1];
                         if (downCandy != null && upCandy != null)
                         {
-                            if (downCandy.name == currentCandy.name && upCandy.name == downCandy.name)
+                            if (downCandy.name == thisCandy.name && upCandy.name == downCandy.name)
                             {
-                                currentCandy.GetComponent<Candy>().isMatched = true;
+                                thisCandy.GetComponent<Candy>().isMatched = true;
                                 upCandy.GetComponent<Candy>().isMatched = true;
                                 downCandy.GetComponent<Candy>().isMatched = true;
                             }
@@ -157,8 +156,12 @@ public class BoardManager : MonoBehaviour
         if (!IsMatchedOnBoard())
         {
             streakValue = 0;
+            currentState = GameState.Idling;
         }
-        AddToCurrentMatches();
+        else
+        {
+            AddToCurrentMatches();
+        }
     }
     public void AddToCurrentMatches()
     {
@@ -223,18 +226,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            DestroyCandy();
-        }
-    }
-    public void DestroyCandy()
-    {
-        if (IsMatchedOnBoard())
-        {
             StartCoroutine(MatchSpecialCandy());
-        }
-        else
-        {
-            currentState = GameState.Idling;
         }
     }
     public bool IsMatchedOnBoard()
