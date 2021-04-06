@@ -50,6 +50,8 @@ public class BoardManager : MonoBehaviour
     private int totalScore;
 
     public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
+
+    public GameObject combatGO;
     private void Awake()
     {
         Instance = this;
@@ -366,7 +368,6 @@ public class BoardManager : MonoBehaviour
             }
         }
         ScoreManager.Instance.IncreaseScore(totalScore);
-        EnemyManager.Instance.TakeDamage(totalScore);
         StartCoroutine(CollapseRow());
     }
 
