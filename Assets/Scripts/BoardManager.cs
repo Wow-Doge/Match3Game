@@ -81,7 +81,6 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
     public void CreateBoard()
     {
         GenerateBackgroundTiles();
@@ -114,8 +113,7 @@ public class BoardManager : MonoBehaviour
             ShuffleBoard();
         }
     }
-
-    public void ScanBoard()
+    public void FindMatches()
     {
         for (int i = 0; i < boardWidth; i++)
         {
@@ -177,7 +175,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        AddChain();
+        GetChain();
     }
     public bool MatchedCandyNotInList()
     {
@@ -196,7 +194,7 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    public void AddChain()
+    public void GetChain()
     {
         foreach (GameObject candy in currentMatches)
         {
@@ -651,27 +649,27 @@ public class BoardManager : MonoBehaviour
         {
             ShuffleBoard();
         }
-        ScanBoard();
+        FindMatches();
     }
-    public bool CheckMatchInit(int boardHeight, int boardWidth, GameObject candy)
+    public bool CheckMatchInit(int height, int width, GameObject candy)
     {
-        if (boardHeight > 1)
+        if (height > 1)
         {
-            if (candyPosition[boardHeight - 1, boardWidth] != null && candyPosition[boardHeight - 2, boardWidth] != null)
+            if (candyPosition[height - 1, width] != null && candyPosition[height - 2, width] != null)
             {
-                if (candyPosition[boardHeight - 1, boardWidth].name == candy.name &&
-                    candyPosition[boardHeight - 2, boardWidth].name == candy.name)
+                if (candyPosition[height - 1, width].name == candy.name &&
+                    candyPosition[height - 2, width].name == candy.name)
                 {
                     return true;
                 }
             }
         }
-        if (boardWidth > 1)
+        if (width > 1)
         {
-            if (candyPosition[boardHeight, boardWidth - 1] != null && candyPosition[boardHeight, boardWidth - 2] != null)
+            if (candyPosition[height, width - 1] != null && candyPosition[height, width - 2] != null)
             {
-                if (candyPosition[boardHeight, boardWidth - 1].name == candy.name &&
-                    candyPosition[boardHeight, boardWidth - 2].name == candy.name)
+                if (candyPosition[height, width - 1].name == candy.name &&
+                    candyPosition[height, width - 2].name == candy.name)
                 {
                     return true;
                 }
@@ -737,11 +735,11 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void SwitchPieces(int boardHeight, int boardWidth, Vector2 direction)
+    private void SwitchPieces(int column, int row, Vector2 direction)
     {
-        GameObject holder = candyPosition[boardHeight + (int)direction.x, boardWidth + (int)direction.y] as GameObject;
-        candyPosition[boardHeight + (int)direction.x, boardWidth + (int)direction.y] = candyPosition[boardHeight, boardWidth];
-        candyPosition[boardHeight, boardWidth] = holder;
+        GameObject holder = candyPosition[column + (int)direction.x, row + (int)direction.y] as GameObject;
+        candyPosition[column + (int)direction.x, row + (int)direction.y] = candyPosition[column, row];
+        candyPosition[column, row] = holder;
     }
     private bool CheckPossibleMatches()
     {
@@ -776,15 +774,15 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    private bool SwitchAndCheck(int boardHeight, int boardWidth, Vector2 direction)
+    private bool SwitchAndCheck(int column, int row, Vector2 direction)
     {
-        SwitchPieces(boardHeight, boardWidth, direction);
+        SwitchPieces(column, row, direction);
         if (CheckPossibleMatches())
         {
-            SwitchPieces(boardHeight, boardWidth, direction);
+            SwitchPieces(column, row, direction);
             return true;
         }
-        SwitchPieces(boardHeight, boardWidth, direction);
+        SwitchPieces(column, row, direction);
         return false;
     }
     private bool IsDeadLocked()

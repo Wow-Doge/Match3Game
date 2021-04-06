@@ -84,7 +84,7 @@ public class Candy : MonoBehaviour
         //if (Input.GetMouseButtonDown(1))
         //{
         //    isMatched = true;
-        //    BoardManager.Instance.ScanBoard();
+        //    BoardManager.Instance.FindMatches();
         //}
     }
 
@@ -234,7 +234,7 @@ public class Candy : MonoBehaviour
             BoardManager.Instance.GetSameColorCandies(thisCandy);
             otherCandy.GetComponent<Candy>().isMatched = true;
         }
-        BoardManager.Instance.ScanBoard();
+        BoardManager.Instance.FindMatches();
     }
     public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
     {
