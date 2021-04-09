@@ -8,4 +8,13 @@ public class CharacterInformation : ScriptableObject
     public int maxHealth;
     public int damage;
     public int mana;
+    public enum CharacterColor
+    {
+        Red,
+        Blue,
+        Green,
+        Yellow,
+        Purple,
+    }
+    public CharacterColor color;
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyManager : MonoBehaviour
 {
     public EnemyInformation enemyInformation;
 
@@ -18,8 +18,9 @@ public class EnemyController : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    void Update()
+    public void TakeDamage(int amount)
     {
-        
+        currentHealth -= amount;
+        Debug.Log("enemy health: " + currentHealth);
     }
 }

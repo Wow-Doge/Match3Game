@@ -39,14 +39,16 @@ public class Candy : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (BoardManager.Instance.currentState == GameState.Idling)
+        //BoardManager.Instance.currentState == GameState.Idling
+        if (BattleSystem.Instance.battleState == BattleState.PLAYERTURN)
         {
             firstTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
     }
     private void OnMouseUp()
     {
-        if (BoardManager.Instance.currentState == GameState.Idling)
+        //BoardManager.Instance.currentState == GameState.Idling
+        if (BattleSystem.Instance.battleState == BattleState.PLAYERTURN)
         {
             finalTouch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             CalculateDistance();
@@ -101,7 +103,8 @@ public class Candy : MonoBehaviour
     }
     private void MoveCandy()
     {
-        BoardManager.Instance.currentState = GameState.Moving;
+        BattleSystem.Instance.battleState = BattleState.PLAYERMOVING;
+        //BoardManager.Instance.currentState = GameState.Moving;
         if (distanceX > distanceY)
         {
             if (firstTouch.x > finalTouch.x && atColumn > 0)
@@ -136,7 +139,8 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            BoardManager.Instance.currentState = GameState.Idling;
+            //BoardManager.Instance.currentState = GameState.Idling;
+            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
         }
     }
     private void MoveRight()
@@ -158,7 +162,8 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            BoardManager.Instance.currentState = GameState.Idling;
+            //BoardManager.Instance.currentState = GameState.Idling;
+            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
         }
     }
     private void MoveUp()
@@ -180,7 +185,8 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            BoardManager.Instance.currentState = GameState.Idling;
+            //BoardManager.Instance.currentState = GameState.Idling;
+            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
         }
     }
     private void MoveDown()
@@ -202,7 +208,8 @@ public class Candy : MonoBehaviour
         }
         else
         {
-            BoardManager.Instance.currentState = GameState.Idling;
+            //BoardManager.Instance.currentState = GameState.Idling;
+            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
         }
     }
 
@@ -250,7 +257,8 @@ public class Candy : MonoBehaviour
         thisCandy.transform.position = target;
         nextCandy.transform.position = current;
         yield return new WaitForSeconds(lerpTime);
-        BoardManager.Instance.currentState = GameState.Idling;
+        //BoardManager.Instance.currentState = GameState.Idling;
+        BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
     }
     public IEnumerator MoveBack(GameObject otherCandy)
     {

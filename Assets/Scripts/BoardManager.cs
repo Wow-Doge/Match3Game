@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
-public enum GameState
-{
-    Idling,
-    Moving
-}
+//public enum GameState
+//{
+//    Idling,
+//    Moving
+//}
 
 public enum BackgroundTileType
 {
@@ -28,7 +30,6 @@ public class TileType
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
-    public GameState currentState = GameState.Idling;
     public int boardHeight;
     public int boardWidth;
     public int offset;
@@ -51,7 +52,10 @@ public class BoardManager : MonoBehaviour
 
     public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
 
-    public GameObject combatGO;
+    public GameObject battleSystem;
+
+    public event Action<Dictionary<string, List<GameObject>>> OnTurnEnd;
+
     private void Awake()
     {
         Instance = this;
@@ -153,14 +157,16 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        if (!IsMatchedOnBoard())
+        if (IsMatchedOnBoard())
         {
-            streakValue = 0;
-            currentState = GameState.Idling;
+            AddToCurrentMatches();
         }
         else
         {
-            AddToCurrentMatches();
+            streakValue = 0;
+            BattleSystem.Instance.battleState = BattleState.ENEMYTURN;
+            OnTurnEnd?.Invoke(dict);
+            ClearDictionary();
         }
     }
     public void AddToCurrentMatches()
@@ -616,7 +622,6 @@ public class BoardManager : MonoBehaviour
         currentMatches.Clear();
         RefillBoard();
     }
-
     public void RefillBoard()
     {
         for (int i = 0; i < boardWidth; i++)
@@ -643,6 +648,7 @@ public class BoardManager : MonoBehaviour
         }
         FindMatches();
     }
+
     public bool CheckMatchInit(int height, int width, GameObject candy)
     {
         if (height > 1)
