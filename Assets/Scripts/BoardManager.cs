@@ -164,7 +164,7 @@ public class BoardManager : MonoBehaviour
         else
         {
             streakValue = 0;
-            BattleSystem.Instance.battleState = BattleState.ENEMYTURN;
+            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
             OnTurnEnd?.Invoke(dict);
             ClearDictionary();
         }

@@ -13,18 +13,18 @@ public enum BattleState
 }
 public class BattleSystem : MonoBehaviour
 {
+    public static BattleSystem Instance;
+
     public BattleState battleState;
 
-    public GameObject character;
-    public GameObject enemy;
+    public List<GameObject> characterList = new List<GameObject>();
+    public List<GameObject> enemyList = new List<GameObject>();
 
     public Transform characterPlace;
     public Transform enemyPlace;
 
-    public GameObject char1;
-    public GameObject enemy1;
-
-    public static BattleSystem Instance;
+    public List<GameObject> charBattle = new List<GameObject>();
+    public List<GameObject> enemyBattle = new List<GameObject>();
     private void Awake()
     {
         Instance = this;
@@ -39,31 +39,50 @@ public class BattleSystem : MonoBehaviour
 
     private IEnumerator StartBattle()
     {
-        char1 = Instantiate(character, gameObject.transform.position, Quaternion.identity);
-        enemy1 = Instantiate(enemy, gameObject.transform.position, Quaternion.identity);
-
-        char1.transform.SetParent(characterPlace, false);
-        enemy1.transform.SetParent(enemyPlace, false);
+        SpawnCharacters();
+        SpawnEnemies();
         yield return new WaitForSeconds(2f);
         battleState = BattleState.PLAYERTURN;
     }
 
     private void Enemy_TakeDamage(Dictionary<string, List<GameObject>> dict)
     {
-        int damage = char1.GetComponent<CharacterManager>().damage;
-        string color = char1.GetComponent<CharacterManager>().color.ToString();
         int amount = 0;
         foreach (var kvp in dict)
         {
-            //Debug.Log("color: " + kvp.Key + " / " + "Num: " + kvp.Value.Count + " = " + kvp.Value.Count * damage);
-            if (color == kvp.Key)
+            foreach (var thisChar in charBattle)
             {
-                damage *= 2;
+                string color = thisChar.GetComponent<CharacterManager>().color.ToString();
+                int damage = thisChar.GetComponent<CharacterManager>().damage;
+                if (color == kvp.Key)
+                {
+                    amount += kvp.Value.Count * damage;
+                }
             }
-            amount += kvp.Value.Count * damage;
         }
-        enemy1.GetComponent<EnemyManager>().TakeDamage(amount);
+
+        foreach (var enemy in enemyBattle)
+        {
+            enemy.GetComponent<EnemyManager>().TakeDamage(amount);
+        }
     }
 
-
+    public void SpawnCharacters()
+    {
+        foreach (GameObject character in characterList)
+        {
+            GameObject a = Instantiate(character, gameObject.transform.position, Quaternion.identity);
+            a.transform.SetParent(characterPlace, false);
+            charBattle.Add(a);
+        }
+    }
+    public void SpawnEnemies()
+    {
+        foreach (GameObject enemy in enemyList)
+        {
+            GameObject b = Instantiate(enemy, gameObject.transform.position, Quaternion.identity);
+            b.transform.SetParent(enemyPlace, false);
+            enemyBattle.Add(b);
+        }
+    }
 }

@@ -207,9 +207,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleState: 0
-  character: {fileID: 3903918469081315594, guid: 85daa525fbfabbe40adbd3a98e1746e7,
-    type: 3}
-  enemy: {fileID: 2184588715305921252, guid: 666db93732cfe1543bffda09ce3ff8ec, type: 3}
+  characterList:
+  - {fileID: 1813945965691147364, guid: 92abfa4e24623cf40a41abaed2be27f8, type: 3}
+  - {fileID: 8996383282649396436, guid: bcbceb31f2e95084d9168c4bbfc381c1, type: 3}
+  enemyList:
+  - {fileID: 8977109584282126434, guid: 334a15747712e4c418a7d9f2af0c5021, type: 3}
+  - {fileID: 8196832534921216542, guid: 7eff283286c9cd2429766cf109e114f5, type: 3}
   characterPlace: {fileID: 1299992457}
   enemyPlace: {fileID: 41529440}
 --- !u!1 &202159867
@@ -1398,7 +1401,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0e9a10d0953e85419486428bdb8e07e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
   boardHeight: 6
   boardWidth: 8
   offset: 5
