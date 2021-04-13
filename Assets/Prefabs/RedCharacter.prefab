@@ -87,8 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaaa42fea0f424429bb9a5ef3b97090, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterInformation: {fileID: 11400000, guid: d3b33a8b4360dbc4a88cf32aab0c56c3,
-    type: 2}
+  charInfo: {fileID: 11400000, guid: d3b33a8b4360dbc4a88cf32aab0c56c3, type: 2}
   maxHealth: 0
   currentHealth: 0
   damage: 0

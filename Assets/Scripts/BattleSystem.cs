@@ -18,7 +18,7 @@ public class BattleSystem : MonoBehaviour
 
     public BattleState battleState;
 
-    public List<GameObject> characterList = new List<GameObject>();
+    public List<GameObject> charList = new List<GameObject>();
     public List<GameObject> enemyList = new List<GameObject>();
 
     public Transform charPos;
@@ -95,12 +95,12 @@ public class BattleSystem : MonoBehaviour
 
     public void SpawnCharacters()
     {
-        for (int i = 0; i < characterList.Count; i++)
+        for (int i = 0; i < charList.Count; i++)
         {
-            GameObject character = characterList[i];
+            GameObject character = charList[i];
             GameObject a = Instantiate(character, charPos.transform.position, Quaternion.identity);
             a.transform.SetParent(charPos, false);
-            a.GetComponent<RectTransform>().localPosition = new Vector2(a.transform.position.x, a.transform.position.y + 100 * i);
+            a.GetComponent<RectTransform>().localPosition = new Vector2(a.transform.position.x, a.transform.position.y + 150 * i);
             charBattle.Add(a);
         }
     }
@@ -111,7 +111,7 @@ public class BattleSystem : MonoBehaviour
             GameObject enemy = enemyList[i];
             GameObject b = Instantiate(enemy, enemyPos.transform.position, Quaternion.identity);
             b.transform.SetParent(enemyPos, false);
-            b.GetComponent<RectTransform>().localPosition = new Vector2(b.transform.position.x, b.transform.position.y + 100 * i);
+            b.GetComponent<RectTransform>().localPosition = new Vector2(b.transform.position.x, b.transform.position.y + 150 * i);
             enemyBattle.Add(b);
         }
     }

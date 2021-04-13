@@ -207,14 +207,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleState: 0
-  characterList:
+  charList:
   - {fileID: 1813945965691147364, guid: 92abfa4e24623cf40a41abaed2be27f8, type: 3}
   - {fileID: 8996383282649396436, guid: bcbceb31f2e95084d9168c4bbfc381c1, type: 3}
   enemyList:
   - {fileID: 8977109584282126434, guid: 334a15747712e4c418a7d9f2af0c5021, type: 3}
   - {fileID: 8196832534921216542, guid: 7eff283286c9cd2429766cf109e114f5, type: 3}
-  characterPlace: {fileID: 1299992457}
-  enemyPlace: {fileID: 41529440}
+  charPos: {fileID: 1299992457}
+  enemyPos: {fileID: 41529440}
   charBattle: []
   enemyBattle: []
   isContinue_1: 0
@@ -1408,7 +1408,7 @@ MonoBehaviour:
   height: 6
   width: 8
   offset: 5
-  awaitTime: 0.2
+  delayTime: 0.25
   candyType:
   - {fileID: 2444122507372375416, guid: 7e9557e3b3959074fb132df38b8b2de6, type: 3}
   - {fileID: 6808386326144663756, guid: ba390644dc438c44fb131a836bb201f7, type: 3}

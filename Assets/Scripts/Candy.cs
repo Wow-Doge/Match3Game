@@ -236,19 +236,19 @@ public class Candy : MonoBehaviour
         }
         BoardManager.Instance.FindMatches();
     }
-    public IEnumerator SwapObjectBack(GameObject thisCandy, GameObject nextCandy, Vector2 current, Vector2 target, float overTime)
+    public IEnumerator SwapBack(GameObject select, GameObject next, Vector2 current, Vector2 target, float overTime)
     {
-        thisCandy.GetComponent<Candy>().GetPos();
-        nextCandy.GetComponent<Candy>().GetPos();
+        select.GetComponent<Candy>().GetPos();
+        next.GetComponent<Candy>().GetPos();
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
-            thisCandy.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
-            nextCandy.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
+            select.transform.position = Vector2.Lerp(current, target, (Time.time - startTime) / overTime);
+            next.transform.position = Vector2.Lerp(target, current, (Time.time - startTime) / overTime);
             yield return null;
         }
-        thisCandy.transform.position = target;
-        nextCandy.transform.position = current;
+        select.transform.position = target;
+        next.transform.position = current;
         yield return new WaitForSeconds(lerpTime);
         BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
     }
@@ -268,7 +268,7 @@ public class Candy : MonoBehaviour
                 column = targetColumn;
                 row = targetRow;
 
-                StartCoroutine(SwapObjectBack(gameObject, otherCandy, target, current, lerpTime));
+                StartCoroutine(SwapBack(gameObject, otherCandy, target, current, lerpTime));
             }
         }
     }
