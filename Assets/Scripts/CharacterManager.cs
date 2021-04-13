@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    public CharacterInformation characterInformation;
+    public CharacterInformation charInfo;
 
     public int maxHealth;
     public int currentHealth;
@@ -13,11 +13,11 @@ public class CharacterManager : MonoBehaviour
     public string color;
     void Start()
     {
-        maxHealth = characterInformation.maxHealth;
-        damage = characterInformation.damage;
-        mana = characterInformation.mana;
+        maxHealth = charInfo.maxHealth;
+        damage = charInfo.damage;
+        mana = charInfo.mana;
         currentHealth = maxHealth;
-        color = characterInformation.color.ToString();
+        color = charInfo.color.ToString();
     }
 
     public void TakeDamage(int amount)

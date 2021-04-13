@@ -218,6 +218,7 @@ MonoBehaviour:
   charBattle: []
   enemyBattle: []
   isContinue_1: 0
+  isContinue_2: 0
 --- !u!1 &202159867
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,8 +1405,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0e9a10d0953e85419486428bdb8e07e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardHeight: 6
-  boardWidth: 8
+  height: 6
+  width: 8
   offset: 5
   awaitTime: 0.2
   candyType:
@@ -1414,8 +1415,8 @@ MonoBehaviour:
   - {fileID: 8454123369769689135, guid: ea1cb2276c75b254db12708c09f57d75, type: 3}
   - {fileID: 700340073591132606, guid: 4102ab6fe900a7b4db29a9ef43400729, type: 3}
   - {fileID: 7461044822135968363, guid: 9fd14cbe75ea39a4d81d052fd70c35e8, type: 3}
-  currentMatches: []
-  selectedCandy: {fileID: 0}
+  matchedList: []
+  selectCandy: {fileID: 0}
   boardLayout: []
   breakableTilePrefab: {fileID: 1266080140825844998, guid: baabc3987de10a94a9fa598ba65a190a,
     type: 3}

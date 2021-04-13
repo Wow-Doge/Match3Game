@@ -11,14 +11,6 @@ public class BackgroundTile : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
-    {
-        //if (hitPoints <= 0)
-        //{
-        //    Destroy(this.gameObject);
-        //}
-    }
-
     public void TakeDamage(int damage)
     {
         hitPoints -= damage;

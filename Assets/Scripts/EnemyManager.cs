@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    public EnemyInformation enemyInformation;
+    public EnemyInformation enemyInfo;
 
     public int maxHealth;
     public int currentHealth;
@@ -13,9 +13,9 @@ public class EnemyManager : MonoBehaviour
     public int currentCharge;
     void Start()
     {
-        maxHealth = enemyInformation.maxHealth;
-        damage = enemyInformation.damage;
-        charge = enemyInformation.charge;
+        maxHealth = enemyInfo.maxHealth;
+        damage = enemyInfo.damage;
+        charge = enemyInfo.charge;
         currentHealth = maxHealth;
         currentCharge = charge;
     }

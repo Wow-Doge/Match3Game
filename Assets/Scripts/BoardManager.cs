@@ -30,15 +30,15 @@ public class TileType
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
-    public int boardHeight;
-    public int boardWidth;
+    public int height;
+    public int width;
     public int offset;
-    public float awaitTime = 0.25f;
+    public float delayTime = 0.25f;
 
-    public GameObject[,] candyPosition;
+    public GameObject[,] candyPos;
     public List<GameObject> candyType = new List<GameObject>();
-    public List<GameObject> currentMatches = new List<GameObject>();
-    public GameObject selectedCandy;
+    public List<GameObject> matchedList = new List<GameObject>();
+    public GameObject selectCandy;
 
     public TileType[] boardLayout;
     private bool[,] blankSpaces;
@@ -60,11 +60,11 @@ public class BoardManager : MonoBehaviour
     }
     void Start()
     {
-        candyPosition = new GameObject[boardWidth, boardHeight];
-        blankSpaces = new bool[boardWidth, boardHeight];
-        breakableTiles = new BackgroundTile[boardWidth, boardHeight];
+        candyPos = new GameObject[width, height];
+        blankSpaces = new bool[width, height];
+        breakableTiles = new BackgroundTile[width, height];
         CreateBoard();
-        CreateDictionary();
+        CreateDict();
     }
 
     public void GenerateBackgroundTiles()
@@ -86,13 +86,13 @@ public class BoardManager : MonoBehaviour
     public void CreateBoard()
     {
         GenerateBackgroundTiles();
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
                 if (!blankSpaces[i, j])
                 {
-                    Vector2 tempPosition = new Vector2(i, j + offset);
+                    Vector2 tempPos = new Vector2(i, j + offset);
                     int random = Random.Range(0, candyType.Count);
                     int maxIterations = 0;
                     while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
@@ -100,12 +100,12 @@ public class BoardManager : MonoBehaviour
                         random = Random.Range(0, candyType.Count);
                         maxIterations++;
                     }
-                    GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
-                    newCandy.GetComponent<Candy>().atRow = j;
-                    newCandy.GetComponent<Candy>().atColumn = i;
+                    GameObject newCandy = Instantiate(candyType[random], tempPos, Quaternion.identity);
+                    newCandy.GetComponent<Candy>().row = j;
+                    newCandy.GetComponent<Candy>().column = i;
                     newCandy.transform.parent = this.transform;
                     newCandy.name = newCandy.name.Replace("(Clone)", "");
-                    candyPosition[i, j] = newCandy;
+                    candyPos[i, j] = newCandy;
                 }
             }
         }
@@ -116,39 +116,39 @@ public class BoardManager : MonoBehaviour
     }
     public void FindMatches()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                GameObject thisCandy = candyPosition[i, j];
-                if (thisCandy != null)
+                GameObject select = candyPos[i, j];
+                if (select != null)
                 {
-                    if (i > 0 && i < boardWidth - 1)
+                    if (i > 0 && i < width - 1)
                     {
-                        GameObject leftCandy = candyPosition[i - 1, j];
-                        GameObject rightCandy = candyPosition[i + 1, j];
-                        if (leftCandy != null && rightCandy != null)
+                        GameObject left = candyPos[i - 1, j];
+                        GameObject right = candyPos[i + 1, j];
+                        if (left != null && right != null)
                         {
-                            if (leftCandy.name == thisCandy.name && rightCandy.name == thisCandy.name)
+                            if (left.name == select.name && right.name == select.name)
                             {
-                                thisCandy.GetComponent<Candy>().isMatched = true;
-                                leftCandy.GetComponent<Candy>().isMatched = true;
-                                rightCandy.GetComponent<Candy>().isMatched = true;
+                                select.GetComponent<Candy>().isMatched = true;
+                                left.GetComponent<Candy>().isMatched = true;
+                                right.GetComponent<Candy>().isMatched = true;
                             }
                         }
                     }
 
-                    if (j > 0 && j < boardHeight - 1)
+                    if (j > 0 && j < height - 1)
                     {
-                        GameObject downCandy = candyPosition[i, j - 1];
-                        GameObject upCandy = candyPosition[i, j + 1];
-                        if (downCandy != null && upCandy != null)
+                        GameObject down = candyPos[i, j - 1];
+                        GameObject up = candyPos[i, j + 1];
+                        if (down != null && up != null)
                         {
-                            if (downCandy.name == thisCandy.name && upCandy.name == downCandy.name)
+                            if (down.name == select.name && up.name == down.name)
                             {
-                                thisCandy.GetComponent<Candy>().isMatched = true;
-                                upCandy.GetComponent<Candy>().isMatched = true;
-                                downCandy.GetComponent<Candy>().isMatched = true;
+                                select.GetComponent<Candy>().isMatched = true;
+                                up.GetComponent<Candy>().isMatched = true;
+                                down.GetComponent<Candy>().isMatched = true;
                             }
                         }
                     }
@@ -157,7 +157,7 @@ public class BoardManager : MonoBehaviour
         }
         if (IsMatchedOnBoard())
         {
-            AddToCurrentMatches();
+            AddToMatchedList();
         }
         else
         {
@@ -167,20 +167,20 @@ public class BoardManager : MonoBehaviour
             }
             OnTurnEnd?.Invoke(this, EventArgs.Empty);
             streakValue = 0;
-            ClearDictionary();
+            ClearDict();
         }
     }
-    public void AddToCurrentMatches()
+    public void AddToMatchedList()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (!currentMatches.Contains(candyPosition[i, j]) && candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    if (!matchedList.Contains(candyPos[i, j]) && candyPos[i, j].GetComponent<Candy>().isMatched)
                     {
-                        currentMatches.Add(candyPosition[i, j]);
+                        matchedList.Add(candyPos[i, j]);
                     }
                 }
             }
@@ -189,13 +189,13 @@ public class BoardManager : MonoBehaviour
     }
     public bool MatchedCandyNotInList()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (candyPosition[i, j].GetComponent<Candy>().isMatched && !currentMatches.Contains(candyPosition[i, j]))
+                    if (candyPos[i, j].GetComponent<Candy>().isMatched && !matchedList.Contains(candyPos[i, j]))
                     {
                         return true;
                     }
@@ -206,21 +206,21 @@ public class BoardManager : MonoBehaviour
     }
     public void GetChain()
     {
-        foreach (GameObject candy in currentMatches)
+        foreach (GameObject candy in matchedList)
         {
-            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.ColumnStripe)
+            if (candy.GetComponent<Candy>().special == Candy.SpecialCandy.ColumnStripe)
             {
-                GetColumnCandies(candy.GetComponent<Candy>().atColumn);
+                GetColumn(candy.GetComponent<Candy>().column);
             }
-            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.RowStripe)
+            if (candy.GetComponent<Candy>().special == Candy.SpecialCandy.RowStripe)
             {
-                GetRowCandies(candy.GetComponent<Candy>().atRow);
+                GetRow(candy.GetComponent<Candy>().row);
             }
-            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.SquareBomb)
+            if (candy.GetComponent<Candy>().special == Candy.SpecialCandy.SquareBomb)
             {
-                GetSquareCandies(candy);
+                GetSquare(candy);
             }
-            if (candy.GetComponent<Candy>().specialCandy == Candy.SpecialCandy.ColorBomb)
+            if (candy.GetComponent<Candy>().special == Candy.SpecialCandy.ColorBomb)
             {
                 //not working as intended
                 //GetSameColorCandies(candyType[Random.Range(0, candyType.Count)]);
@@ -229,22 +229,22 @@ public class BoardManager : MonoBehaviour
         }
         if (MatchedCandyNotInList())
         {
-            AddToCurrentMatches();
+            AddToMatchedList();
         }
         else
         {
-            StartCoroutine(MatchSpecialCandy());
+            StartCoroutine(MatchSpecial());
         }
     }
     public bool IsMatchedOnBoard()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    if (candyPos[i, j].GetComponent<Candy>().isMatched)
                     {
                         return true;
                     }
@@ -253,99 +253,99 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    public IEnumerator MatchSpecialCandy()
+    public IEnumerator MatchSpecial()
     {
-        CountCandyColor();
-        yield return new WaitForSeconds(awaitTime);
-        for (int i = 0; i < boardWidth; i++)
+        CountColor();
+        yield return new WaitForSeconds(delayTime);
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null && candyPosition[i, j].GetComponent<Candy>().isMatched)
+                if (candyPos[i, j] != null && candyPos[i, j].GetComponent<Candy>().isMatched)
                 {
-                    if (selectedCandy != null)
+                    if (selectCandy != null)
                     {
-                        GameObject otherCandy = selectedCandy.GetComponent<Candy>().otherCandy;
-                        if (IsPlayerMatchColorBomb(selectedCandy))
+                        GameObject other = selectCandy.GetComponent<Candy>().otherCandy;
+                        if (PlayerMatchColor(selectCandy))
                         {
-                            selectedCandy.GetComponent<Candy>().ColorBombCandy();
+                            selectCandy.GetComponent<Candy>().ColorBomb();
                         }
-                        if (IsPlayerMatchColorBomb(otherCandy))
+                        if (PlayerMatchColor(other))
                         {
-                            otherCandy.GetComponent<Candy>().ColorBombCandy();
+                            other.GetComponent<Candy>().ColorBomb();
                         }
-                        if (IsPlayerMatchSquareBomb(selectedCandy))
+                        if (PlayerMatchSquare(selectCandy))
                         {
-                            selectedCandy.GetComponent<Candy>().SquareBombCandy();
+                            selectCandy.GetComponent<Candy>().SquareBomb();
                         }
-                        if (IsPlayerMatchSquareBomb(otherCandy))
+                        if (PlayerMatchSquare(other))
                         {
-                            otherCandy.GetComponent<Candy>().SquareBombCandy();
+                            other.GetComponent<Candy>().SquareBomb();
                         }
-                        if (IsPlayerMatchStripe(selectedCandy))
+                        if (PlayerMatchStripe(selectCandy))
                         {
-                            if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
+                            if (selectCandy.GetComponent<Candy>().column == other.GetComponent<Candy>().column)
                             {
-                                selectedCandy.GetComponent<Candy>().ColumnStripeCandy();
+                                selectCandy.GetComponent<Candy>().ColumnStripe();
                             }
-                            else if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
+                            else if (selectCandy.GetComponent<Candy>().row == other.GetComponent<Candy>().row)
                             {
-                                selectedCandy.GetComponent<Candy>().RowStripeCandy();
+                                selectCandy.GetComponent<Candy>().RowStripe();
                             }
                         }
-                        if (IsPlayerMatchStripe(otherCandy))
+                        if (PlayerMatchStripe(other))
                         {
-                            if (selectedCandy.GetComponent<Candy>().atRow == otherCandy.GetComponent<Candy>().atRow)
+                            if (selectCandy.GetComponent<Candy>().row == other.GetComponent<Candy>().row)
                             {
-                                otherCandy.GetComponent<Candy>().RowStripeCandy();
+                                other.GetComponent<Candy>().RowStripe();
                             }
-                            else if (selectedCandy.GetComponent<Candy>().atColumn == otherCandy.GetComponent<Candy>().atColumn)
+                            else if (selectCandy.GetComponent<Candy>().column == other.GetComponent<Candy>().column)
                             {
-                                otherCandy.GetComponent<Candy>().ColumnStripeCandy();
+                                other.GetComponent<Candy>().ColumnStripe();
                             }
                         }
                     }
                     else
                     {
-                        if (IsBoardMatchColumnColorBomb(candyPosition[i, j]))
+                        if (BoardMatchColumnColor(candyPos[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().ColorBombCandy();
+                            candyPos[i, j].GetComponent<Candy>().ColorBomb();
                         }
-                        if (IsBoardMatchRowColorBomb(candyPosition[i, j]))
+                        if (BoardMatchRowColor(candyPos[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().ColorBombCandy();
+                            candyPos[i, j].GetComponent<Candy>().ColorBomb();
                         }
-                        if (IsPlayerMatchSquareBomb(candyPosition[i, j]))
+                        if (PlayerMatchSquare(candyPos[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().SquareBombCandy();
+                            candyPos[i, j].GetComponent<Candy>().SquareBomb();
                         }
-                        if (IsBoardMatchColumnStripe(candyPosition[i, j]))
+                        if (BoardMatchColumnStripe(candyPos[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().ColumnStripeCandy();
+                            candyPos[i, j].GetComponent<Candy>().ColumnStripe();
                         }
-                        if (IsBoardMatchRowStripe(candyPosition[i, j]))
+                        if (BoardMatchRowStripe(candyPos[i, j]))
                         {
-                            candyPosition[i, j].GetComponent<Candy>().RowStripeCandy();
+                            candyPos[i, j].GetComponent<Candy>().RowStripe();
                         }
                     }
                 }
             }
         }
-        yield return new WaitForSeconds(awaitTime);
-        RemoveMatchedCandies();
+        yield return new WaitForSeconds(delayTime);
+        RemoveMatched();
     }
 
-    private void RemoveMatchedCandies()
+    private void RemoveMatched()
     {
         totalScore = 0;
         streakValue++;
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (candyPosition[i, j].GetComponent<Candy>().isMatched)
+                    if (candyPos[i, j].GetComponent<Candy>().isMatched)
                     {
                         if (breakableTiles[i, j] != null)
                         {
@@ -357,9 +357,9 @@ public class BoardManager : MonoBehaviour
                             }
                         }
                         totalScore += basePieceValue * streakValue;
-                        currentMatches.Remove(candyPosition[i, j]);
-                        Destroy(candyPosition[i, j]);
-                        candyPosition[i, j] = null;
+                        matchedList.Remove(candyPos[i, j]);
+                        Destroy(candyPos[i, j]);
+                        candyPos[i, j] = null;
                     }
                 }
             }
@@ -368,278 +368,278 @@ public class BoardManager : MonoBehaviour
         StartCoroutine(CollapseRow());
     }
 
-    private bool IsPlayerMatchColorBomb(GameObject targetCandy)
+    private bool PlayerMatchColor(GameObject target)
     {
-        List<GameObject> horizontalList = new List<GameObject>();
-        List<GameObject> verticalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> horizontal = new List<GameObject>();
+        List<GameObject> vertical = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atColumn == targetCandy.GetComponent<Candy>().atColumn && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().column == target.GetComponent<Candy>().column && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atRow - targetCandy.GetComponent<Candy>().atRow) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().row - target.GetComponent<Candy>().row) < 3)
                     {
-                        verticalList.Add(candy);
+                        vertical.Add(candy);
                     }
                 }
-                if (candy.GetComponent<Candy>().atRow == targetCandy.GetComponent<Candy>().atRow && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().row == target.GetComponent<Candy>().row && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atColumn - targetCandy.GetComponent<Candy>().atColumn) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().column - target.GetComponent<Candy>().column) < 3)
                     {
-                        horizontalList.Add(candy);
+                        horizontal.Add(candy);
                     }
                 }
             }
         }
 
-        if (verticalList.Count == 5)
+        if (vertical.Count == 5)
         {
-            foreach (GameObject candy in verticalList)
+            foreach (GameObject candy in vertical)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        if (horizontalList.Count == 5)
+        if (horizontal.Count == 5)
         {
-            foreach (GameObject candy in horizontalList)
+            foreach (GameObject candy in horizontal)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return (verticalList.Count == 5 || horizontalList.Count == 5);
+        return (vertical.Count == 5 || horizontal.Count == 5);
     }
-    private bool IsPlayerMatchStripe(GameObject targetCandy)
+    private bool PlayerMatchStripe(GameObject target)
     {
-        List<GameObject> horizontalList = new List<GameObject>();
-        List<GameObject> verticalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> horizontal = new List<GameObject>();
+        List<GameObject> vertical = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atColumn == targetCandy.GetComponent<Candy>().atColumn && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().column == target.GetComponent<Candy>().column && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atRow - targetCandy.GetComponent<Candy>().atRow) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().row - target.GetComponent<Candy>().row) < 3)
                     {
-                        verticalList.Add(candy);
+                        vertical.Add(candy);
                     }
                 }
-                if (candy.GetComponent<Candy>().atRow == targetCandy.GetComponent<Candy>().atRow && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().row == target.GetComponent<Candy>().row && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atColumn - targetCandy.GetComponent<Candy>().atColumn) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().column - target.GetComponent<Candy>().column) < 3)
                     {
-                        horizontalList.Add(candy);
+                        horizontal.Add(candy);
                     }
                 }
             }
         }
-        if (verticalList.Count == 4)
+        if (vertical.Count == 4)
         {
-            foreach (GameObject candy in verticalList)
+            foreach (GameObject candy in vertical)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        if (horizontalList.Count == 4)
+        if (horizontal.Count == 4)
         {
-            foreach (GameObject candy in horizontalList)
+            foreach (GameObject candy in horizontal)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return (verticalList.Count == 4 || horizontalList.Count == 4);
+        return (vertical.Count == 4 || horizontal.Count == 4);
     }
-    private bool IsPlayerMatchSquareBomb(GameObject targetCandy)
+    private bool PlayerMatchSquare(GameObject target)
     {
-        List<GameObject> horizontalList = new List<GameObject>();
-        List<GameObject> verticalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> horizontal = new List<GameObject>();
+        List<GameObject> vertical = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.name == targetCandy.name)
+                if (candy.name == target.name)
                 {
-                    if (candy.GetComponent<Candy>().atRow == targetCandy.GetComponent<Candy>().atRow)
+                    if (candy.GetComponent<Candy>().row == target.GetComponent<Candy>().row)
                     {
-                        if (Mathf.Abs(candy.GetComponent<Candy>().atColumn - targetCandy.GetComponent<Candy>().atColumn) < 3)
+                        if (Mathf.Abs(candy.GetComponent<Candy>().column - target.GetComponent<Candy>().column) < 3)
                         {
-                            horizontalList.Add(candy);
+                            horizontal.Add(candy);
                         }
                     }
-                    if (candy.GetComponent<Candy>().atColumn == targetCandy.GetComponent<Candy>().atColumn)
+                    if (candy.GetComponent<Candy>().column == target.GetComponent<Candy>().column)
                     {
-                        if (Mathf.Abs(candy.GetComponent<Candy>().atRow - targetCandy.GetComponent<Candy>().atRow) < 3)
+                        if (Mathf.Abs(candy.GetComponent<Candy>().row - target.GetComponent<Candy>().row) < 3)
                         {
-                            verticalList.Add(candy);
+                            vertical.Add(candy);
                         }
                     }
                 }
             }
         }
-        if ((verticalList.Count == 3 || verticalList.Count == 4) && (horizontalList.Count == 3 || horizontalList.Count == 4))
+        if ((vertical.Count == 3 || vertical.Count == 4) && (horizontal.Count == 3 || horizontal.Count == 4))
         {
-            foreach (GameObject candy in verticalList)
+            foreach (GameObject candy in vertical)
             {
                 if (candy != null)
                 {
-                    currentMatches.Remove(candy);
+                    matchedList.Remove(candy);
                 }
             }
-            foreach (GameObject candy in horizontalList)
+            foreach (GameObject candy in horizontal)
             {
                 if (candy != null)
                 {
-                    currentMatches.Remove(candy);
+                    matchedList.Remove(candy);
                 }
             }
         }
-        return (verticalList.Count == 4 || verticalList.Count == 3) && (horizontalList.Count == 4 || horizontalList.Count == 3);
+        return (vertical.Count == 4 || vertical.Count == 3) && (horizontal.Count == 4 || horizontal.Count == 3);
     }
-    private bool IsBoardMatchColumnStripe(GameObject targetCandy)
+    private bool BoardMatchColumnStripe(GameObject target)
     {
-        List<GameObject> verticalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> vertical = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atColumn == targetCandy.GetComponent<Candy>().atColumn && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().column == target.GetComponent<Candy>().column && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atRow - targetCandy.GetComponent<Candy>().atRow) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().row - target.GetComponent<Candy>().row) < 3)
                     {
-                        verticalList.Add(candy);
+                        vertical.Add(candy);
                     }
                 }
             }
         }
-        if (verticalList.Count == 4)
+        if (vertical.Count == 4)
         {
-            foreach (GameObject candy in verticalList)
+            foreach (GameObject candy in vertical)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return verticalList.Count == 4;
+        return vertical.Count == 4;
     }
-    private bool IsBoardMatchRowStripe(GameObject targetCandy)
+    private bool BoardMatchRowStripe(GameObject target)
     {
-        List<GameObject> horizontalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> horizontal = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atRow == targetCandy.GetComponent<Candy>().atRow && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().row == target.GetComponent<Candy>().row && candy.name == target.name)
                 {
-                    if (Mathf.Abs(candy.GetComponent<Candy>().atColumn - targetCandy.GetComponent<Candy>().atColumn) < 3)
+                    if (Mathf.Abs(candy.GetComponent<Candy>().column - target.GetComponent<Candy>().column) < 3)
                     {
-                        horizontalList.Add(candy);
+                        horizontal.Add(candy);
                     }
                 }
             }
         }
-        if (horizontalList.Count == 4)
+        if (horizontal.Count == 4)
         {
-            foreach (GameObject candy in horizontalList)
+            foreach (GameObject candy in horizontal)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return horizontalList.Count == 4;
+        return horizontal.Count == 4;
     }
-    private bool IsBoardMatchColumnColorBomb(GameObject targetCandy)
+    private bool BoardMatchColumnColor(GameObject target)
     {
-        List<GameObject> verticalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> vertical = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atColumn == targetCandy.GetComponent<Candy>().atColumn && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().column == target.GetComponent<Candy>().column && candy.name == target.name)
                 {
-                    if (candy.GetComponent<Candy>().atRow - targetCandy.GetComponent<Candy>().atRow < 5)
+                    if (candy.GetComponent<Candy>().row - target.GetComponent<Candy>().row < 5)
                     {
-                        verticalList.Add(candy);
+                        vertical.Add(candy);
                     }
                 }
             }
         }
-        if (verticalList.Count == 5)
+        if (vertical.Count == 5)
         {
-            foreach (GameObject candy in verticalList)
+            foreach (GameObject candy in vertical)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return verticalList.Count == 5;
+        return vertical.Count == 5;
     }
-    private bool IsBoardMatchRowColorBomb(GameObject targetCandy)
+    private bool BoardMatchRowColor(GameObject target)
     {
-        List<GameObject> horizontalList = new List<GameObject>();
-        if (targetCandy != null)
+        List<GameObject> horizontal = new List<GameObject>();
+        if (target != null)
         {
-            foreach (GameObject candy in currentMatches)
+            foreach (GameObject candy in matchedList)
             {
-                if (candy.GetComponent<Candy>().atRow == targetCandy.GetComponent<Candy>().atRow && candy.name == targetCandy.name)
+                if (candy.GetComponent<Candy>().row == target.GetComponent<Candy>().row && candy.name == target.name)
                 {
-                    if (candy.GetComponent<Candy>().atColumn - targetCandy.GetComponent<Candy>().atColumn < 5)
+                    if (candy.GetComponent<Candy>().column - target.GetComponent<Candy>().column < 5)
                     {
-                        horizontalList.Add(candy);
+                        horizontal.Add(candy);
                     }
                 }
             }
         }
-        if (horizontalList.Count == 5)
+        if (horizontal.Count == 5)
         {
-            foreach (GameObject candy in horizontalList)
+            foreach (GameObject candy in horizontal)
             {
-                currentMatches.Remove(candy);
+                matchedList.Remove(candy);
             }
         }
-        return horizontalList.Count == 5;
+        return horizontal.Count == 5;
     }
 
     private IEnumerator CollapseRow()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (!blankSpaces[i, j] && candyPosition[i, j] == null)
+                if (!blankSpaces[i, j] && candyPos[i, j] == null)
                 {
-                    for (int k = j + 1; k < boardHeight; k++)
+                    for (int k = j + 1; k < height; k++)
                     {
-                        if (candyPosition[i, k] != null)
+                        if (candyPos[i, k] != null)
                         {
-                            candyPosition[i, k].GetComponent<Candy>().atRow = j;
-                            StartCoroutine(candyPosition[i, k].GetComponent<Candy>().CollapseCandy());
-                            candyPosition[i, k].GetComponent<Candy>().GetPosition();
-                            candyPosition[i, k] = null;
+                            candyPos[i, k].GetComponent<Candy>().row = j;
+                            StartCoroutine(candyPos[i, k].GetComponent<Candy>().CollapseCandy());
+                            candyPos[i, k].GetComponent<Candy>().GetPos();
+                            candyPos[i, k] = null;
                             break;
                         }
                     }
                 }
             }
         }
-        yield return new WaitForSeconds(awaitTime);
-        selectedCandy = null;
-        currentMatches.Clear();
+        yield return new WaitForSeconds(delayTime);
+        selectCandy = null;
+        matchedList.Clear();
         RefillBoard();
     }
     public void RefillBoard()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] == null && !blankSpaces[i, j])
+                if (candyPos[i, j] == null && !blankSpaces[i, j])
                 {
-                    Vector2 tempPosition = new Vector2(i, j + offset);
+                    Vector2 tempPos = new Vector2(i, j + offset);
                     int random = Random.Range(0, candyType.Count);
-                    GameObject newCandy = Instantiate(candyType[random], tempPosition, Quaternion.identity);
+                    GameObject newCandy = Instantiate(candyType[random], tempPos, Quaternion.identity);
 
-                    newCandy.GetComponent<Candy>().atRow = j;
-                    newCandy.GetComponent<Candy>().atColumn = i;
+                    newCandy.GetComponent<Candy>().row = j;
+                    newCandy.GetComponent<Candy>().column = i;
                     newCandy.transform.parent = this.transform;
                     newCandy.name = newCandy.name.Replace("(Clone)", "");
-                    candyPosition[i, j] = newCandy;
+                    candyPos[i, j] = newCandy;
                 }
             }
         }
@@ -650,25 +650,25 @@ public class BoardManager : MonoBehaviour
         FindMatches();
     }
 
-    public bool CheckMatchInit(int height, int width, GameObject candy)
+    public bool CheckMatchInit(int Y, int X, GameObject candy)
     {
-        if (height > 1)
+        if (Y > 1)
         {
-            if (candyPosition[height - 1, width] != null && candyPosition[height - 2, width] != null)
+            if (candyPos[Y - 1, X] != null && candyPos[Y - 2, X] != null)
             {
-                if (candyPosition[height - 1, width].name == candy.name &&
-                    candyPosition[height - 2, width].name == candy.name)
+                if (candyPos[Y - 1, X].name == candy.name &&
+                    candyPos[Y - 2, X].name == candy.name)
                 {
                     return true;
                 }
             }
         }
-        if (width > 1)
+        if (X > 1)
         {
-            if (candyPosition[height, width - 1] != null && candyPosition[height, width - 2] != null)
+            if (candyPos[Y, X - 1] != null && candyPos[Y, X - 2] != null)
             {
-                if (candyPosition[height, width - 1].name == candy.name &&
-                    candyPosition[height, width - 2].name == candy.name)
+                if (candyPos[Y, X - 1].name == candy.name &&
+                    candyPos[Y, X - 2].name == candy.name)
                 {
                     return true;
                 }
@@ -676,57 +676,57 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    private void GetColumnCandies(int boardColumn)
+    private void GetColumn(int X)
     {
-        for (int i = 0; i < boardHeight; i++)
+        for (int i = 0; i < height; i++)
         {
-            if (candyPosition[boardColumn, i] != null && !currentMatches.Contains(candyPosition[boardColumn, i]))
+            if (candyPos[X, i] != null && !matchedList.Contains(candyPos[X, i]))
             {
-                candyPosition[boardColumn, i].GetComponent<Candy>().isMatched = true;
+                candyPos[X, i].GetComponent<Candy>().isMatched = true;
             }
         }
     }
-    private void GetRowCandies(int boardRow)
+    private void GetRow(int Y)
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            if (candyPosition[i, boardRow] != null && !currentMatches.Contains(candyPosition[i, boardRow]))
+            if (candyPos[i, Y] != null && !matchedList.Contains(candyPos[i, Y]))
             {
-                candyPosition[i, boardRow].GetComponent<Candy>().isMatched = true;
+                candyPos[i, Y].GetComponent<Candy>().isMatched = true;
             }
         }
     }
-    public void GetSameColorCandies(GameObject candy)
+    public void GetColor(GameObject candy)
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (candyPosition[i, j].name == candy.name)
+                    if (candyPos[i, j].name == candy.name)
                     {
-                        candyPosition[i, j].GetComponent<Candy>().isMatched = true;
+                        candyPos[i, j].GetComponent<Candy>().isMatched = true;
                     }
                 }
             }
         }
     }
-    public void GetSquareCandies(GameObject candy)
+    public void GetSquare(GameObject candy)
     {
         if (candy != null)
         {
-            int x = candy.GetComponent<Candy>().atColumn;
-            int y = candy.GetComponent<Candy>().atRow;
+            int x = candy.GetComponent<Candy>().column;
+            int y = candy.GetComponent<Candy>().row;
             for (int i = x - 1; i <= x + 1; i++)
             {
                 for (int j = y - 1; j <= y + 1; j++)
                 {
-                    if (i >= 0 && i < boardWidth && j >= 0 && j < boardHeight)
+                    if (i >= 0 && i < width && j >= 0 && j < height)
                     {
-                        if (candyPosition[i, j] != null)
+                        if (candyPos[i, j] != null)
                         {
-                            candyPosition[i, j].GetComponent<Candy>().isMatched = true;
+                            candyPos[i, j].GetComponent<Candy>().isMatched = true;
                         }
                     }
                 }
@@ -734,35 +734,35 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void SwitchPieces(int column, int row, Vector2 direction)
+    private void SwitchPieces(int column, int row, Vector2 dir)
     {
-        GameObject holder = candyPosition[column + (int)direction.x, row + (int)direction.y] as GameObject;
-        candyPosition[column + (int)direction.x, row + (int)direction.y] = candyPosition[column, row];
-        candyPosition[column, row] = holder;
+        GameObject holder = candyPos[column + (int)dir.x, row + (int)dir.y] as GameObject;
+        candyPos[column + (int)dir.x, row + (int)dir.y] = candyPos[column, row];
+        candyPos[column, row] = holder;
     }
     private bool CheckPossibleMatches()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (i < boardWidth - 2)
+                    if (i < width - 2)
                     {
-                        if (candyPosition[i + 1, j] != null && candyPosition[i + 2, j] != null)
+                        if (candyPos[i + 1, j] != null && candyPos[i + 2, j] != null)
                         {
-                            if (candyPosition[i + 1, j].name == candyPosition[i, j].name && candyPosition[i + 2, j].name == candyPosition[i, j].name)
+                            if (candyPos[i + 1, j].name == candyPos[i, j].name && candyPos[i + 2, j].name == candyPos[i, j].name)
                             {
                                 return true;
                             }
                         }
                     }
-                    if (j < boardHeight - 2)
+                    if (j < height - 2)
                     {
-                        if (candyPosition[i, j + 1] != null && candyPosition[i, j + 2] != null)
+                        if (candyPos[i, j + 1] != null && candyPos[i, j + 2] != null)
                         {
-                            if (candyPosition[i, j + 1].name == candyPosition[i, j].name && candyPosition[i, j + 2].name == candyPosition[i, j].name)
+                            if (candyPos[i, j + 1].name == candyPos[i, j].name && candyPos[i, j + 2].name == candyPos[i, j].name)
                             {
                                 return true;
                             }
@@ -773,32 +773,32 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
-    private bool SwitchAndCheck(int column, int row, Vector2 direction)
+    private bool SwitchAndCheck(int col, int row, Vector2 dir)
     {
-        SwitchPieces(column, row, direction);
+        SwitchPieces(col, row, dir);
         if (CheckPossibleMatches())
         {
-            SwitchPieces(column, row, direction);
+            SwitchPieces(col, row, dir);
             return true;
         }
-        SwitchPieces(column, row, direction);
+        SwitchPieces(col, row, dir);
         return false;
     }
     private bool IsDeadLocked()
     {
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    if (candyPosition[i, j].name == "rainbow")
+                    if (candyPos[i, j].name == "rainbow")
                     {
                         return false;
                     }
-                    if (i < boardWidth - 1)
+                    if (i < width - 1)
                     {
-                        if (candyPosition[i + 1, j] != null)
+                        if (candyPos[i + 1, j] != null)
                         {
                             if (SwitchAndCheck(i, j, Vector2.right))
                             {
@@ -806,9 +806,9 @@ public class BoardManager : MonoBehaviour
                             }
                         }
                     }
-                    if (j < boardHeight - 1)
+                    if (j < height - 1)
                     {
-                        if (candyPosition[i, j + 1] != null)
+                        if (candyPos[i, j + 1] != null)
                         {
                             if (SwitchAndCheck(i, j, Vector2.up))
                             {
@@ -824,19 +824,19 @@ public class BoardManager : MonoBehaviour
     private void ShuffleBoard()
     {
         List<GameObject> newBoard = new List<GameObject>();
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (candyPosition[i, j] != null)
+                if (candyPos[i, j] != null)
                 {
-                    newBoard.Add(candyPosition[i, j]);
+                    newBoard.Add(candyPos[i, j]);
                 }
             }
         }
-        for (int i = 0; i < boardWidth; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < boardHeight; j++)
+            for (int j = 0; j < height; j++)
             {
                 if (!blankSpaces[i, j])
                 {
@@ -849,10 +849,9 @@ public class BoardManager : MonoBehaviour
                         maxIterations++;
                     }
                     Candy candy = newBoard[pieceToUse].GetComponent<Candy>();
-                    maxIterations = 0;
-                    candy.atColumn = i;
-                    candy.atRow = j;
-                    candyPosition[i, j] = newBoard[pieceToUse];
+                    candy.column = i;
+                    candy.row = j;
+                    candyPos[i, j] = newBoard[pieceToUse];
                     newBoard.Remove(newBoard[pieceToUse]);
                     candy.transform.position = new Vector2(i, j);
                 }
@@ -864,7 +863,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private Dictionary<string, List<GameObject>> CreateDictionary()
+    private Dictionary<string, List<GameObject>> CreateDict()
     {
         foreach (GameObject color in candyType)
         {
@@ -873,9 +872,9 @@ public class BoardManager : MonoBehaviour
         }
         return dict;
     }
-    private void AddCandyToDictionary()
+    private void AddToDict()
     {
-        foreach (GameObject candy in currentMatches)
+        foreach (GameObject candy in matchedList)
         {
             foreach (KeyValuePair<string, List<GameObject>> pair in dict)
             {
@@ -886,16 +885,16 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-    private void ClearDictionary()
+    private void ClearDict()
     {
         foreach (var candyColor in dict)
         {
             candyColor.Value.Clear();
         }
     }
-    private void CountCandyColor()
+    private void CountColor()
     {
-        AddCandyToDictionary();
+        AddToDict();
         ScoreManager.Instance.ToText();
     }
 }
