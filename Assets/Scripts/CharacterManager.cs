@@ -19,4 +19,9 @@ public class CharacterManager : MonoBehaviour
         currentHealth = maxHealth;
         color = characterInformation.color.ToString();
     }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+    }
 }

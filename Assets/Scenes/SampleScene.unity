@@ -215,6 +215,9 @@ MonoBehaviour:
   - {fileID: 8196832534921216542, guid: 7eff283286c9cd2429766cf109e114f5, type: 3}
   characterPlace: {fileID: 1299992457}
   enemyPlace: {fileID: 41529440}
+  charBattle: []
+  enemyBattle: []
+  isContinue_1: 0
 --- !u!1 &202159867
 GameObject:
   m_ObjectHideFlags: 0

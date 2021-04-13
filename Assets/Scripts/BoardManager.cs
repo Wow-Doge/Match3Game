@@ -51,11 +51,9 @@ public class BoardManager : MonoBehaviour
     private int totalScore;
 
     public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
-
     public GameObject battleSystem;
 
-    public event Action<Dictionary<string, List<GameObject>>> OnTurnEnd;
-
+    public event EventHandler OnTurnEnd;
     private void Awake()
     {
         Instance = this;
@@ -163,9 +161,12 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
+            if (streakValue == 0)
+            {
+                return;
+            }
+            OnTurnEnd?.Invoke(this, EventArgs.Empty);
             streakValue = 0;
-            BattleSystem.Instance.battleState = BattleState.PLAYERTURN;
-            OnTurnEnd?.Invoke(dict);
             ClearDictionary();
         }
     }

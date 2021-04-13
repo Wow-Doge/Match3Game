@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum BattleState
 {
@@ -25,6 +26,9 @@ public class BattleSystem : MonoBehaviour
 
     public List<GameObject> charBattle = new List<GameObject>();
     public List<GameObject> enemyBattle = new List<GameObject>();
+
+    public bool isContinue_1 = false;
+    public bool isContinue_2 = false;
     private void Awake()
     {
         Instance = this;
@@ -34,21 +38,36 @@ public class BattleSystem : MonoBehaviour
         battleState = BattleState.START;
         StartCoroutine(StartBattle());
 
-        BoardManager.Instance.OnTurnEnd += Enemy_TakeDamage;
+        BoardManager.Instance.OnTurnEnd += NextTurn;
     }
 
-    private IEnumerator StartBattle()
+    private void NextTurn(object sender, System.EventArgs e)
     {
-        SpawnCharacters();
-        SpawnEnemies();
-        yield return new WaitForSeconds(2f);
+        StartCoroutine(NextTurn_());
+    }
+    private IEnumerator NextTurn_()
+    {
+        PlayerAttack();
+
+        yield return new WaitForSeconds(1f);
+        foreach (var enemy in enemyBattle)
+        {
+            enemy.GetComponent<EnemyManager>().DecreaseCharge();
+        }
+        if (enemyBattle.Any(enemy => enemy.GetComponent<EnemyManager>().currentCharge <= 0))
+        {
+            isContinue_1 = false;
+            StartCoroutine(EnemyTurn());
+            yield return new WaitUntil(() => isContinue_1);
+            Debug.Log("Enemy finish turn");
+        }
         battleState = BattleState.PLAYERTURN;
     }
 
-    private void Enemy_TakeDamage(Dictionary<string, List<GameObject>> dict)
+    public void PlayerAttack()
     {
         int amount = 0;
-        foreach (var kvp in dict)
+        foreach (var kvp in BoardManager.Instance.dict)
         {
             foreach (var thisChar in charBattle)
             {
@@ -60,29 +79,80 @@ public class BattleSystem : MonoBehaviour
                 }
             }
         }
-
         foreach (var enemy in enemyBattle)
         {
             enemy.GetComponent<EnemyManager>().TakeDamage(amount);
         }
     }
 
+    private IEnumerator StartBattle()
+    {
+        SpawnCharacters();
+        SpawnEnemies();
+        yield return new WaitForSeconds(2f);
+        battleState = BattleState.PLAYERTURN;
+    }
+
     public void SpawnCharacters()
     {
-        foreach (GameObject character in characterList)
+        for (int i = 0; i < characterList.Count; i++)
         {
-            GameObject a = Instantiate(character, gameObject.transform.position, Quaternion.identity);
+            GameObject character = characterList[i];
+            GameObject a = Instantiate(character, characterPlace.transform.position, Quaternion.identity);
             a.transform.SetParent(characterPlace, false);
+            a.GetComponent<RectTransform>().localPosition = new Vector2(a.transform.position.x, a.transform.position.y + 100 * i);
             charBattle.Add(a);
         }
     }
     public void SpawnEnemies()
     {
-        foreach (GameObject enemy in enemyList)
+        for (int i = 0; i < enemyList.Count; i++)
         {
-            GameObject b = Instantiate(enemy, gameObject.transform.position, Quaternion.identity);
+            GameObject enemy = enemyList[i];
+            GameObject b = Instantiate(enemy, enemyPlace.transform.position, Quaternion.identity);
             b.transform.SetParent(enemyPlace, false);
+            b.GetComponent<RectTransform>().localPosition = new Vector2(b.transform.position.x, b.transform.position.y + 100 * i);
             enemyBattle.Add(b);
         }
+    }
+
+    public IEnumerator EnemyTurn()
+    {
+        Debug.Log("Enemy turn");
+        BattleSystem.Instance.battleState = BattleState.ENEMYTURN;
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(EnemyAttack());
+        yield return new WaitUntil(() => isContinue_2);
+        ResetCharge();
+        yield return new WaitForSeconds(1f);
+        isContinue_1 = true;
+    }
+
+    public void ResetCharge()
+    {
+        foreach (var enemy in enemyBattle)
+        {
+            int currentCharge = enemy.GetComponent<EnemyManager>().currentCharge;
+            if (currentCharge < 1)
+            {
+                enemy.GetComponent<EnemyManager>().ResetCharge();
+            }
+        }
+        Debug.Log("reset charge");
+    }
+
+    public IEnumerator EnemyAttack()
+    {
+        isContinue_2 = false;
+        foreach (var enemy in enemyBattle)
+        {
+            int amount = enemy.GetComponent<EnemyManager>().damage;
+            GameObject target = charBattle.ElementAt(Random.Range(0, charBattle.Count));
+            target.GetComponent<CharacterManager>().TakeDamage(amount);
+            Debug.Log("Enemy attack: " + target.name + ", damage: " + amount);
+            yield return new WaitForSeconds(0.5f);
+        }
+        Debug.Log("enemy finish attack");
+        isContinue_2 = true;
     }
 }
