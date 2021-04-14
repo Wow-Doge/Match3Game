@@ -151,10 +151,10 @@ RectTransform:
   m_Father: {fileID: 59060984}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -175, y: 0}
-  m_SizeDelta: {x: 350, y: 0}
+  m_SizeDelta: {x: 350, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &59060983
 GameObject:
@@ -210,9 +210,11 @@ MonoBehaviour:
   charList:
   - {fileID: 1813945965691147364, guid: 92abfa4e24623cf40a41abaed2be27f8, type: 3}
   - {fileID: 8996383282649396436, guid: bcbceb31f2e95084d9168c4bbfc381c1, type: 3}
+  - {fileID: 1813212179711391609, guid: e7899e8dab6972f45a515b4a9e0b7ae1, type: 3}
   enemyList:
   - {fileID: 8977109584282126434, guid: 334a15747712e4c418a7d9f2af0c5021, type: 3}
   - {fileID: 8196832534921216542, guid: 7eff283286c9cd2429766cf109e114f5, type: 3}
+  - {fileID: 3007524507311688530, guid: c12ac866f89351d469b9dd9e52bdfc8d, type: 3}
   charPos: {fileID: 1299992457}
   enemyPos: {fileID: 41529440}
   charBattle: []
@@ -574,7 +576,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8.5
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -598,7 +600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.5, y: 8, z: -10}
+  m_LocalPosition: {x: 3, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1267,10 +1269,10 @@ RectTransform:
   m_Father: {fileID: 59060984}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 175, y: 0}
-  m_SizeDelta: {x: 350, y: 0}
+  m_SizeDelta: {x: 350, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1345286360
 GameObject:
@@ -1406,7 +1408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   height: 6
-  width: 8
+  width: 7
   offset: 5
   delayTime: 0.25
   candyType:

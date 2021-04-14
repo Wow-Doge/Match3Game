@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : MonoBehaviour, IPointerClickHandler
 {
     public EnemyInformation enemyInfo;
 
@@ -11,6 +12,7 @@ public class EnemyManager : MonoBehaviour
     public int damage;
     public int charge;
     public int currentCharge;
+    public bool isSelected = false;
     void Start()
     {
         maxHealth = enemyInfo.maxHealth;
@@ -33,5 +35,30 @@ public class EnemyManager : MonoBehaviour
     public void ResetCharge()
     {
         currentCharge = charge;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ShowSelectCircle();
+        List<GameObject> enemyList = BattleSystem.Instance.enemyBattle;
+        foreach (var enemy in enemyList)
+        {
+            if (enemy != this.gameObject)
+            {
+                enemy.GetComponent<EnemyManager>().HideSelectCircle();
+            }
+        }
+    }
+
+    public void HideSelectCircle()
+    {
+        isSelected = false;
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void ShowSelectCircle()
+    {
+        isSelected = true;
+        gameObject.transform.GetChild(0).gameObject.SetActive(true);
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
 public enum BattleState
 {
     START,
@@ -97,10 +96,9 @@ public class BattleSystem : MonoBehaviour
     {
         for (int i = 0; i < charList.Count; i++)
         {
-            GameObject character = charList[i];
-            GameObject a = Instantiate(character, charPos.transform.position, Quaternion.identity);
+            GameObject a = Instantiate(charList[i], charList[i].transform.position, Quaternion.identity);
             a.transform.SetParent(charPos, false);
-            a.GetComponent<RectTransform>().localPosition = new Vector2(a.transform.position.x, a.transform.position.y + 150 * i);
+            a.transform.localPosition = new Vector2(0, -150 + 150 * i);
             charBattle.Add(a);
         }
     }
@@ -108,12 +106,17 @@ public class BattleSystem : MonoBehaviour
     {
         for (int i = 0; i < enemyList.Count; i++)
         {
-            GameObject enemy = enemyList[i];
-            GameObject b = Instantiate(enemy, enemyPos.transform.position, Quaternion.identity);
+            GameObject b = Instantiate(enemyList[i], enemyList[i].transform.position, Quaternion.identity);
             b.transform.SetParent(enemyPos, false);
-            b.GetComponent<RectTransform>().localPosition = new Vector2(b.transform.position.x, b.transform.position.y + 150 * i);
+            b.transform.localPosition = new Vector2(0, -150 + 150 * i);
             enemyBattle.Add(b);
         }
+
+        foreach (var enemy in enemyBattle)
+        {
+            enemy.GetComponent<EnemyManager>().HideSelectCircle();
+        }
+        enemyBattle.ElementAt(0).GetComponent<EnemyManager>().ShowSelectCircle();
     }
 
     public IEnumerator EnemyTurn()

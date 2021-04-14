@@ -37,19 +37,19 @@ public class ScoreManager : MonoBehaviour
         {
             switch (kvp.Key)
             {
-                case "red":
+                case "Red":
                     redBar.GetComponent<TextMeshProUGUI>().text = "red\n " + kvp.Value.Count.ToString();
                     break;
-                case "blue":
+                case "Blue":
                     blueBar.GetComponent<TextMeshProUGUI>().text = "blue\n " + kvp.Value.Count.ToString();
                     break;
-                case "yellow":
+                case "Yellow":
                     yellowBar.GetComponent<TextMeshProUGUI>().text = "yellow\n " + kvp.Value.Count.ToString();
                     break;
-                case "purple":
+                case "Purple":
                     purpleBar.GetComponent<TextMeshProUGUI>().text = "purple\n " + kvp.Value.Count.ToString();
                     break;
-                case "green":
+                case "Green":
                     greenBar.GetComponent<TextMeshProUGUI>().text = "green\n " + kvp.Value.Count.ToString();
                     break;
                 default:

@@ -4,12 +4,6 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 
-//public enum GameState
-//{
-//    Idling,
-//    Moving
-//}
-
 public enum BackgroundTileType
 {
     Breakable,
