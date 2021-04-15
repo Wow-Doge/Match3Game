@@ -25,6 +25,15 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            DestroyEnemy();
+        }
+    }
+
+    public void DestroyEnemy()
+    {
+        Destroy(gameObject);
     }
 
     public void DecreaseCharge()

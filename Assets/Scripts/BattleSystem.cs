@@ -78,10 +78,10 @@ public class BattleSystem : MonoBehaviour
                 }
             }
         }
-        foreach (var enemy in enemyBattle)
-        {
-            enemy.GetComponent<EnemyManager>().TakeDamage(amount);
-        }
+
+        GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
+        target.GetComponent<EnemyManager>().TakeDamage(amount);
+        Debug.Log("enemy " + target.name + " take " + amount + " damage");
     }
 
     private IEnumerator StartBattle()
