@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+
 public enum BattleState
 {
     START,
@@ -39,51 +40,6 @@ public class BattleSystem : MonoBehaviour
 
         BoardManager.Instance.OnTurnEnd += NextTurn;
     }
-
-    private void NextTurn(object sender, System.EventArgs e)
-    {
-        StartCoroutine(NextTurn_());
-    }
-    private IEnumerator NextTurn_()
-    {
-        PlayerAttack();
-
-        yield return new WaitForSeconds(1f);
-        foreach (var enemy in enemyBattle)
-        {
-            enemy.GetComponent<EnemyManager>().DecreaseCharge();
-        }
-        if (enemyBattle.Any(enemy => enemy.GetComponent<EnemyManager>().currentCharge <= 0))
-        {
-            isContinue_1 = false;
-            StartCoroutine(EnemyTurn());
-            yield return new WaitUntil(() => isContinue_1);
-            Debug.Log("Enemy finish turn");
-        }
-        battleState = BattleState.PLAYERTURN;
-    }
-
-    public void PlayerAttack()
-    {
-        int amount = 0;
-        foreach (var kvp in BoardManager.Instance.dict)
-        {
-            foreach (var thisChar in charBattle)
-            {
-                string color = thisChar.GetComponent<CharacterManager>().color.ToString();
-                int damage = thisChar.GetComponent<CharacterManager>().damage;
-                if (color == kvp.Key)
-                {
-                    amount += kvp.Value.Count * damage;
-                }
-            }
-        }
-
-        GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
-        target.GetComponent<EnemyManager>().TakeDamage(amount);
-        Debug.Log("enemy " + target.name + " take " + amount + " damage");
-    }
-
     private IEnumerator StartBattle()
     {
         SpawnCharacters();
@@ -91,7 +47,6 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         battleState = BattleState.PLAYERTURN;
     }
-
     public void SpawnCharacters()
     {
         for (int i = 0; i < charList.Count; i++)
@@ -116,46 +71,104 @@ public class BattleSystem : MonoBehaviour
         {
             enemy.GetComponent<EnemyManager>().HideSelectCircle();
         }
-        enemyBattle.ElementAt(0).GetComponent<EnemyManager>().ShowSelectCircle();
+        AutoTarget();
+    }
+    private void NextTurn(object sender, System.EventArgs e)
+    {
+        StartCoroutine(NextTurn_());
+    }
+    private IEnumerator NextTurn_()
+    {
+        PlayerAttack();
+        yield return new WaitForSeconds(1f);
+        foreach (var enemy in enemyBattle)
+        {
+            enemy.GetComponent<EnemyManager>().DecreaseCharge();
+            int charge = enemy.GetComponent<EnemyManager>().currentCharge;
+            if (charge <= 0)
+            {
+                isContinue_1 = false;
+                StartCoroutine(EnemyTurn(enemy));
+                yield return new WaitUntil(() => isContinue_1);
+                Debug.Log("Enemy " + enemy.name + " finish turn");
+            }
+        }
+        CharacterCount();
     }
 
-    public IEnumerator EnemyTurn()
+    public void PlayerAttack()
     {
-        Debug.Log("Enemy turn");
-        BattleSystem.Instance.battleState = BattleState.ENEMYTURN;
+        int amount = 0;
+        foreach (var kvp in BoardManager.Instance.dict)
+        {
+            foreach (var thisChar in charBattle)
+            {
+                string color = thisChar.GetComponent<CharacterManager>().color.ToString();
+                int damage = thisChar.GetComponent<CharacterManager>().damage;
+                if (color == kvp.Key)
+                {
+                    amount += kvp.Value.Count * damage;
+                }
+            }
+        }
+
+        GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
+        target.GetComponent<EnemyManager>().TakeDamage(amount);
+        Debug.Log("enemy " + target.name + " take " + amount + " damage");
+    }
+
+
+    public IEnumerator EnemyTurn(GameObject enemy)
+    {
+        Debug.Log("Enemy " + enemy.name + " turn");
+        battleState = BattleState.ENEMYTURN;
         yield return new WaitForSeconds(1f);
-        StartCoroutine(EnemyAttack());
+        StartCoroutine(EnemyAttack(enemy));
         yield return new WaitUntil(() => isContinue_2);
-        ResetCharge();
+        ResetCharge(enemy);
         yield return new WaitForSeconds(1f);
         isContinue_1 = true;
     }
 
-    public void ResetCharge()
+    public void ResetCharge(GameObject enemy)
     {
-        foreach (var enemy in enemyBattle)
+        int currentCharge = enemy.GetComponent<EnemyManager>().currentCharge;
+        if (currentCharge < 1)
         {
-            int currentCharge = enemy.GetComponent<EnemyManager>().currentCharge;
-            if (currentCharge < 1)
-            {
-                enemy.GetComponent<EnemyManager>().ResetCharge();
-            }
+            enemy.GetComponent<EnemyManager>().ResetCharge();
         }
-        Debug.Log("reset charge");
+        Debug.Log("enemy " + enemy.name + " reset charge");
     }
 
-    public IEnumerator EnemyAttack()
+    public IEnumerator EnemyAttack(GameObject enemy)
     {
         isContinue_2 = false;
-        foreach (var enemy in enemyBattle)
-        {
-            int amount = enemy.GetComponent<EnemyManager>().damage;
-            GameObject target = charBattle.ElementAt(Random.Range(0, charBattle.Count));
-            target.GetComponent<CharacterManager>().TakeDamage(amount);
-            Debug.Log("Enemy attack: " + target.name + ", damage: " + amount);
-            yield return new WaitForSeconds(0.5f);
-        }
-        Debug.Log("enemy finish attack");
+        int amount = enemy.GetComponent<EnemyManager>().damage;
+        GameObject target = charBattle.ElementAt(Random.Range(0, charBattle.Count));
+        target.GetComponent<CharacterManager>().TakeDamage(amount);
+        Debug.Log("Enemy " + enemy.name + " attack: " + target.name + ", damage: " + amount);
+        yield return new WaitForSeconds(0.5f);
+        Debug.Log("enemy " + enemy.name + " finish attack");
         isContinue_2 = true;
+    }
+
+    public void AutoTarget()
+    {
+        enemyBattle.ElementAt(0).GetComponent<EnemyManager>().ShowSelectCircle();
+    }
+    public void EnemyCount()
+    {
+        if (enemyBattle.Count > 0)
+        {
+            AutoTarget();
+        }
+        else
+        {
+            battleState = BattleState.WIN;
+        }
+    }
+    public void CharacterCount()
+    {
+        battleState = charBattle.Count > 0 ? BattleState.PLAYERTURN : BattleState.LOST;
     }
 }

@@ -23,5 +23,15 @@ public class CharacterManager : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            DestroyCharacter();
+        }
+    }
+
+    public void DestroyCharacter()
+    {
+        BattleSystem.Instance.charBattle.Remove(this.gameObject);
+        Destroy(this.gameObject);
     }
 }

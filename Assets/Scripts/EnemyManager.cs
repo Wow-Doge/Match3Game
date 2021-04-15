@@ -33,7 +33,9 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
 
     public void DestroyEnemy()
     {
-        Destroy(gameObject);
+        BattleSystem.Instance.enemyBattle.Remove(this.gameObject);
+        Destroy(this.gameObject);
+        BattleSystem.Instance.EnemyCount();
     }
 
     public void DecreaseCharge()
