@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SmallEnemy
   m_EditorClassIdentifier: 
   maxHealth: 300
-  damage: 25
-  charge: 8
+  damage: 50
+  charge: 3

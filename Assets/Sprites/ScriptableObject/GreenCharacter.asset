@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: GreenCharacter
   m_EditorClassIdentifier: 
   maxHealth: 5000
-  damage: 50
+  damage: 75
   mana: 15
   color: 2

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: RedCharacter
   m_EditorClassIdentifier: 
   maxHealth: 1000
-  damage: 50
+  damage: 150
   mana: 20
+  color: 0

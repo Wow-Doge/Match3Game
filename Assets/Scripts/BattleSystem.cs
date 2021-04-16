@@ -44,7 +44,7 @@ public class BattleSystem : MonoBehaviour
     {
         SpawnCharacters();
         SpawnEnemies();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         battleState = BattleState.PLAYERTURN;
     }
     public void SpawnCharacters()
@@ -79,24 +79,18 @@ public class BattleSystem : MonoBehaviour
     }
     private IEnumerator NextTurn_()
     {
-        PlayerAttack();
-        yield return new WaitForSeconds(1f);
-        foreach (var enemy in enemyBattle)
+        CharactersTurn();
+        yield return new WaitForSeconds(0.5f);
+        if (NoEnemyLeft())
         {
-            enemy.GetComponent<EnemyManager>().DecreaseCharge();
-            int charge = enemy.GetComponent<EnemyManager>().currentCharge;
-            if (charge <= 0)
-            {
-                isContinue_1 = false;
-                StartCoroutine(EnemyTurn(enemy));
-                yield return new WaitUntil(() => isContinue_1);
-                Debug.Log("Enemy " + enemy.name + " finish turn");
-            }
+            battleState = BattleState.WIN;
+            yield break;
         }
-        CharacterCount();
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(EnemiesTurn());
     }
 
-    public void PlayerAttack()
+    public void CharactersTurn()
     {
         int amount = 0;
         foreach (var kvp in BoardManager.Instance.dict)
@@ -111,13 +105,32 @@ public class BattleSystem : MonoBehaviour
                 }
             }
         }
-
         GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
         target.GetComponent<EnemyManager>().TakeDamage(amount);
         Debug.Log("enemy " + target.name + " take " + amount + " damage");
     }
-
-
+    public IEnumerator EnemiesTurn()
+    {
+        foreach (var enemy in enemyBattle)
+        {
+            enemy.GetComponent<EnemyManager>().DecreaseCharge();
+            int charge = enemy.GetComponent<EnemyManager>().currentCharge;
+            if (charge <= 0)
+            {
+                isContinue_1 = false;
+                StartCoroutine(EnemyTurn(enemy));
+                yield return new WaitUntil(() => isContinue_1);
+                Debug.Log("Enemy " + enemy.name + " finish turn");
+                if (NoCharLeft())
+                {
+                    Debug.Log("Player lose");
+                    battleState = BattleState.LOST;
+                    break;
+                }
+            }
+        }
+        CharacterCount();
+    }
     public IEnumerator EnemyTurn(GameObject enemy)
     {
         Debug.Log("Enemy " + enemy.name + " turn");
@@ -129,17 +142,6 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
         isContinue_1 = true;
     }
-
-    public void ResetCharge(GameObject enemy)
-    {
-        int currentCharge = enemy.GetComponent<EnemyManager>().currentCharge;
-        if (currentCharge < 1)
-        {
-            enemy.GetComponent<EnemyManager>().ResetCharge();
-        }
-        Debug.Log("enemy " + enemy.name + " reset charge");
-    }
-
     public IEnumerator EnemyAttack(GameObject enemy)
     {
         isContinue_2 = false;
@@ -151,21 +153,30 @@ public class BattleSystem : MonoBehaviour
         Debug.Log("enemy " + enemy.name + " finish attack");
         isContinue_2 = true;
     }
+    public void ResetCharge(GameObject enemy)
+    {
+        int currentCharge = enemy.GetComponent<EnemyManager>().currentCharge;
+        if (currentCharge < 1)
+        {
+            enemy.GetComponent<EnemyManager>().ResetCharge();
+        }
+        Debug.Log("enemy " + enemy.name + " reset charge");
+    }
 
     public void AutoTarget()
     {
-        enemyBattle.ElementAt(0).GetComponent<EnemyManager>().ShowSelectCircle();
-    }
-    public void EnemyCount()
-    {
         if (enemyBattle.Count > 0)
         {
-            AutoTarget();
+            enemyBattle.ElementAt(0).GetComponent<EnemyManager>().ShowSelectCircle();
         }
-        else
-        {
-            battleState = BattleState.WIN;
-        }
+    }
+    public bool NoEnemyLeft()
+    {
+        return enemyBattle.Count <= 0;
+    }
+    public bool NoCharLeft()
+    {
+        return charBattle.Count <= 0;
     }
     public void CharacterCount()
     {

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df591c907d182c1429327d9f0e223f0d, type: 3}
   m_Name: BigEnemy
   m_EditorClassIdentifier: 
-  maxHealth: 20000
-  damage: 30000
-  charge: 1
+  maxHealth: 500
+  damage: 200
+  charge: 7
