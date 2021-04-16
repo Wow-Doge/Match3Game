@@ -9,14 +9,17 @@ public class CharacterManager : MonoBehaviour
     public int maxHealth;
     public int currentHealth;
     public int damage;
-    public int mana;
+    public int maxMana;
+    public int currentMana;
     public string color;
+
     void Start()
     {
         maxHealth = charInfo.maxHealth;
         damage = charInfo.damage;
-        mana = charInfo.mana;
+        maxMana = charInfo.mana;
         currentHealth = maxHealth;
+        currentMana = 0;
         color = charInfo.color.ToString();
     }
 
@@ -33,5 +36,14 @@ public class CharacterManager : MonoBehaviour
     {
         BattleSystem.Instance.charBattle.Remove(this.gameObject);
         Destroy(this.gameObject);
+    }
+
+    public void GainMana(int amount)
+    {
+        currentMana += amount;
+        if (currentMana > maxMana)
+        {
+            currentMana = maxMana;
+        }
     }
 }

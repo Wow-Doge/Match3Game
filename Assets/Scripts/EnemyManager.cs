@@ -72,4 +72,6 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
         isSelected = true;
         gameObject.transform.GetChild(0).gameObject.SetActive(true);
     }
+
+
 }

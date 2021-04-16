@@ -101,6 +101,7 @@ public class BattleSystem : MonoBehaviour
                 int damage = thisChar.GetComponent<CharacterManager>().damage;
                 if (color == kvp.Key)
                 {
+                    thisChar.GetComponent<CharacterManager>().GainMana(kvp.Value.Count);
                     amount += kvp.Value.Count * damage;
                 }
             }
