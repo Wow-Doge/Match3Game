@@ -18,6 +18,8 @@ public class CharacterManager : MonoBehaviour
         mana = charInfo.mana;
         currentHealth = maxHealth;
         color = charInfo.color.ToString();
+
+
     }
 
     public void TakeDamage(int amount)
