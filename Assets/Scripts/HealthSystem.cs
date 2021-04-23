@@ -2,42 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthSystem
+public class HealthSystem : MonoBehaviour
 {
-    private int health;
-    private int maxHealth;
+    public int maxHealth;
+    public int currentHealth;
 
-    public HealthSystem(int maxHealth)
+    public void SetCurrentHealth(int maxHealth)
     {
-        this.maxHealth = maxHealth;
-        health = maxHealth;
+        currentHealth = maxHealth;
     }
 
     public int GetHealth()
     {
-        return health;
+        return currentHealth;
     }
 
     public void TakeDamage(int amount)
     {
-        health -= amount;
-        if (health < 0)
+        currentHealth -= amount;
+        if (currentHealth < 0)
         {
-            health = 0;
+            currentHealth = 0;
+            UnitDie();
+        }
+    }
+
+    public void UnitDie()
+    {
+        Destroy(gameObject);
+        BattleSystem.Instance.enemyBattle.Remove(gameObject);
+        BattleSystem.Instance.charBattle.Remove(gameObject);
+        Debug.Log(gameObject.name + "die");
+        if (BattleSystem.Instance.enemyBattle.Count > 0)
+        {
+            BattleSystem.Instance.AutoTarget();
         }
     }
 
     public void Heal(int amount)
     {
-        health += amount;
-        if (health > maxHealth)
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
         {
-            health = maxHealth;
+            currentHealth = maxHealth;
         }
     }
 
     public float GetHealthPercentage()
     {
-        return (float)health / (float)maxHealth;
+        return (float)currentHealth / (float)maxHealth;
     }
 }

@@ -13,6 +13,8 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
     public int charge;
     public int currentCharge;
     public bool isSelected = false;
+
+    public HealthSystem healthSystem;
     void Start()
     {
         maxHealth = enemyInfo.maxHealth;
@@ -20,15 +22,8 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
         charge = enemyInfo.charge;
         currentHealth = maxHealth;
         currentCharge = charge;
-    }
 
-    public void TakeDamage(int amount)
-    {
-        currentHealth -= amount;
-        if (currentHealth <= 0)
-        {
-            DestroyEnemy();
-        }
+        healthSystem.SetCurrentHealth(maxHealth);
     }
 
     public void DestroyEnemy()

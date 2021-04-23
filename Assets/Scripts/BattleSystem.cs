@@ -97,35 +97,38 @@ public class BattleSystem : MonoBehaviour
         {
             foreach (var thisChar in charBattle)
             {
-                string color = thisChar.GetComponent<CharacterManager>().color.ToString();
+                string color = thisChar.GetComponent<CharacterManager>().color.ToString().ToLower();
                 int damage = thisChar.GetComponent<CharacterManager>().damage;
-                if (color == kvp.Key)
+                if (color == kvp.Key.ToLower())
                 {
                     amount += kvp.Value.Count * damage;
                 }
             }
         }
         GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
-        target.GetComponent<EnemyManager>().TakeDamage(amount);
+        target.GetComponent<EnemyManager>().healthSystem.TakeDamage(amount);
         Debug.Log("enemy " + target.name + " take " + amount + " damage");
     }
     public IEnumerator EnemiesTurn()
     {
         foreach (var enemy in enemyBattle)
         {
-            enemy.GetComponent<EnemyManager>().DecreaseCharge();
-            int charge = enemy.GetComponent<EnemyManager>().currentCharge;
-            if (charge <= 0)
+            if (enemy != null)
             {
-                isContinue_1 = false;
-                StartCoroutine(EnemyTurn(enemy));
-                yield return new WaitUntil(() => isContinue_1);
-                Debug.Log("Enemy " + enemy.name + " finish turn");
-                if (NoCharLeft())
+                enemy.GetComponent<EnemyManager>().DecreaseCharge();
+                int charge = enemy.GetComponent<EnemyManager>().currentCharge;
+                if (charge <= 0)
                 {
-                    Debug.Log("Player lose");
-                    battleState = BattleState.LOST;
-                    break;
+                    isContinue_1 = false;
+                    StartCoroutine(EnemyTurn(enemy));
+                    yield return new WaitUntil(() => isContinue_1);
+                    Debug.Log("Enemy " + enemy.name + " finish turn");
+                    if (NoCharLeft())
+                    {
+                        Debug.Log("Player lose");
+                        battleState = BattleState.LOST;
+                        break;
+                    }
                 }
             }
         }
@@ -147,7 +150,7 @@ public class BattleSystem : MonoBehaviour
         isContinue_2 = false;
         int amount = enemy.GetComponent<EnemyManager>().damage;
         GameObject target = charBattle.ElementAt(Random.Range(0, charBattle.Count));
-        target.GetComponent<CharacterManager>().TakeDamage(amount);
+        target.GetComponent<CharacterManager>().healthSystem.TakeDamage(amount);
         Debug.Log("Enemy " + enemy.name + " attack: " + target.name + ", damage: " + amount);
         yield return new WaitForSeconds(0.5f);
         Debug.Log("enemy " + enemy.name + " finish attack");

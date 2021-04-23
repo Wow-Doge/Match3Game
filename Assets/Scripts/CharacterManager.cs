@@ -11,6 +11,8 @@ public class CharacterManager : MonoBehaviour
     public int damage;
     public int mana;
     public string color;
+
+    public HealthSystem healthSystem;
     void Start()
     {
         maxHealth = charInfo.maxHealth;
@@ -19,16 +21,7 @@ public class CharacterManager : MonoBehaviour
         currentHealth = maxHealth;
         color = charInfo.color.ToString();
 
-
-    }
-
-    public void TakeDamage(int amount)
-    {
-        currentHealth -= amount;
-        if (currentHealth <= 0)
-        {
-            DestroyCharacter();
-        }
+        healthSystem.SetCurrentHealth(maxHealth);
     }
 
     public void DestroyCharacter()
