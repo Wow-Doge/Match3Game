@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c9f17222ba20884448e86264d4430d52, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d84dae3e1444a424790471dcf745dff3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,18 +95,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6668e7e6a37bee44783db9230d1f79b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atColumn: 0
-  atRow: 0
+  column: 0
+  row: 0
   isMatched: 0
-  isColumnStripe: 0
-  isRowStripe: 0
-  isColorBomb: 0
-  isSquareBomb: 0
-  columnStripe: {fileID: 21300000, guid: 85f4ff85326d3cc4fb85ee99d5169359, type: 3}
-  rowStripe: {fileID: 21300000, guid: 05a36db85c3913849800bc7b327af9a1, type: 3}
-  colorBomb: {fileID: 21300000, guid: 30ccbc9fb14a35e4eb988f7c51e6bd48, type: 3}
-  squareBomb: {fileID: 21300000, guid: 50cee1492f10d14469d33eba674c4f9f, type: 3}
+  columnStripe: {fileID: 21300000, guid: 15b387b13ee4b9e43a67f31c12f00436, type: 3}
+  rowStripe: {fileID: 21300000, guid: 4ba9884f1e60dfb40ac725e338a43b5f, type: 3}
+  colorBomb: {fileID: 21300000, guid: 1c75496c414a9104b88cb380ca9345fa, type: 3}
+  squareBomb: {fileID: 21300000, guid: 2223ee6a740476b49b721d8a5f81d54d, type: 3}
   otherCandy: {fileID: 0}
+  special: 0
 --- !u!61 &6021902932734942089
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -124,7 +121,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
