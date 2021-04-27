@@ -30,10 +30,13 @@ public class HealthSystem : MonoBehaviour
 
     public void UnitDie()
     {
+        Debug.Log(gameObject.name + "die");
         Destroy(gameObject);
+
+
+
         BattleSystem.Instance.enemyBattle.Remove(gameObject);
         BattleSystem.Instance.charBattle.Remove(gameObject);
-        Debug.Log(gameObject.name + "die");
         if (BattleSystem.Instance.enemyBattle.Count > 0)
         {
             BattleSystem.Instance.AutoTarget();

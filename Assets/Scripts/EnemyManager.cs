@@ -26,13 +26,6 @@ public class EnemyManager : MonoBehaviour, IPointerClickHandler
         healthSystem.SetCurrentHealth(maxHealth);
     }
 
-    public void DestroyEnemy()
-    {
-        BattleSystem.Instance.enemyBattle.Remove(this.gameObject);
-        Destroy(this.gameObject);
-        BattleSystem.Instance.AutoTarget();
-    }
-
     public void DecreaseCharge()
     {
         currentCharge--;

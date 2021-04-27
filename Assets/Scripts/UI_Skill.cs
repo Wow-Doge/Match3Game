@@ -35,14 +35,17 @@ public class UI_Skill : MonoBehaviour
 
     public void UseSkill()
     {
-        Debug.Log("use skill");
-        manaSystem.ResetMana();
-        ResetSkill();
+        if (BattleSystem.Instance.battleState == BattleState.PLAYERTURN)
+        {
+            Debug.Log("use skill");
+            manaSystem.ResetMana();
+            ResetSkill();
+        }
     }
 
     public void SkillReady()
     {
-        image.color = Color.blue;
+        image.color = Color.yellow;
         button.SetActive(true);
     }
 
@@ -53,7 +56,6 @@ public class UI_Skill : MonoBehaviour
 
         float minValue = manaSystem.currentMana;
         float maxValue = manaSystem.maxMana;
-
         float fillPercentage = minValue / maxValue;
         image.fillAmount = fillPercentage;
     }

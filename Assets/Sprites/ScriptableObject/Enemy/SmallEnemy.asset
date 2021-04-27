@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df591c907d182c1429327d9f0e223f0d, type: 3}
   m_Name: SmallEnemy
   m_EditorClassIdentifier: 
-  maxHealth: 1000
+  maxHealth: 100
   damage: 50
   charge: 3

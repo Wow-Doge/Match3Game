@@ -131,13 +131,13 @@ public class BattleSystem : MonoBehaviour
                     isContinue_1 = false;
                     StartCoroutine(EnemyTurn(enemy));
                     yield return new WaitUntil(() => isContinue_1);
-                    Debug.Log("Enemy " + enemy.name + " finish turn");
                     if (NoCharLeft())
                     {
                         Debug.Log("Player lose");
                         battleState = BattleState.LOST;
                         break;
                     }
+                    Debug.Log("Enemy " + enemy.name + " finish turn");
                 }
             }
         }

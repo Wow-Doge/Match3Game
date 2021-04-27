@@ -23,10 +23,4 @@ public class CharacterManager : MonoBehaviour
         healthSystem.SetCurrentHealth(health);
         manaSystem.SetMana(mana);
     }
-
-    public void DestroyCharacter()
-    {
-        BattleSystem.Instance.charBattle.Remove(this.gameObject);
-        Destroy(this.gameObject);
-    }
 }
