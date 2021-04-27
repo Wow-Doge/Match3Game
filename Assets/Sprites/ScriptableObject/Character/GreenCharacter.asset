@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df591c907d182c1429327d9f0e223f0d, type: 3}
-  m_Name: MediumEnemy
+  m_Script: {fileID: 11500000, guid: a5df4eace786d6744aa8348bae04dbcb, type: 3}
+  m_Name: GreenCharacter
   m_EditorClassIdentifier: 
-  maxHealth: 40000
-  damage: 10000
-  charge: 1
+  maxHealth: 5000
+  damage: 75
+  mana: 5
+  color: 2

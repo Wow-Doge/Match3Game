@@ -6,22 +6,22 @@ public class CharacterManager : MonoBehaviour
 {
     public CharacterInformation charInfo;
 
-    public int maxHealth;
-    public int currentHealth;
+    public int health;
     public int damage;
     public int mana;
     public string color;
 
     public HealthSystem healthSystem;
+    public ManaSystem manaSystem;
     void Start()
     {
-        maxHealth = charInfo.maxHealth;
+        health = charInfo.maxHealth;
         damage = charInfo.damage;
         mana = charInfo.mana;
-        currentHealth = maxHealth;
         color = charInfo.color.ToString();
 
-        healthSystem.SetCurrentHealth(maxHealth);
+        healthSystem.SetCurrentHealth(health);
+        manaSystem.SetMana(mana);
     }
 
     public void DestroyCharacter()

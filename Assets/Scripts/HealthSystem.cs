@@ -9,7 +9,8 @@ public class HealthSystem : MonoBehaviour
 
     public void SetCurrentHealth(int maxHealth)
     {
-        currentHealth = maxHealth;
+        this.maxHealth = maxHealth;
+        currentHealth = this.maxHealth;
     }
 
     public int GetHealth()
@@ -20,7 +21,7 @@ public class HealthSystem : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        if (currentHealth < 0)
+        if (currentHealth <= 0)
         {
             currentHealth = 0;
             UnitDie();

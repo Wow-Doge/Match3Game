@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+using Random = UnityEngine.Random;
 
 public enum BattleState
 {
@@ -26,9 +28,12 @@ public class BattleSystem : MonoBehaviour
 
     public List<GameObject> charBattle = new List<GameObject>();
     public List<GameObject> enemyBattle = new List<GameObject>();
+    public GameObject placeholder;
 
     public bool isContinue_1 = false;
     public bool isContinue_2 = false;
+
+    public event EventHandler OnPlayerEndTurn;
     private void Awake()
     {
         Instance = this;
@@ -55,6 +60,8 @@ public class BattleSystem : MonoBehaviour
             a.transform.SetParent(charPos, false);
             a.transform.localPosition = new Vector2(0, -150 + 150 * i);
             charBattle.Add(a);
+            placeholder.transform.GetChild(i).gameObject.GetComponent<UI_Skill>().characterManager = a.GetComponent<CharacterManager>();
+            placeholder.transform.GetChild(i).gameObject.GetComponent<UI_Skill>().manaSystem = a.GetComponent<ManaSystem>();
         }
     }
     public void SpawnEnemies()
@@ -101,10 +108,12 @@ public class BattleSystem : MonoBehaviour
                 int damage = thisChar.GetComponent<CharacterManager>().damage;
                 if (color == kvp.Key.ToLower())
                 {
+                    thisChar.GetComponent<ManaSystem>().IncreaseMana(kvp.Value.Count);
                     amount += kvp.Value.Count * damage;
                 }
             }
         }
+        OnPlayerEndTurn?.Invoke(this, EventArgs.Empty);
         GameObject target = enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
         target.GetComponent<EnemyManager>().healthSystem.TakeDamage(amount);
         Debug.Log("enemy " + target.name + " take " + amount + " damage");

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1813945965691147385}
   - component: {fileID: 1813945965691147386}
   - component: {fileID: 174388208633614348}
+  - component: {fileID: 3918062540053835961}
   m_Layer: 5
   m_Name: RedCharacter
   m_TagString: Untagged
@@ -89,12 +90,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charInfo: {fileID: 11400000, guid: d3b33a8b4360dbc4a88cf32aab0c56c3, type: 2}
-  maxHealth: 0
-  currentHealth: 0
+  health: 0
   damage: 0
   mana: 0
   color: 
   healthSystem: {fileID: 174388208633614348}
+  manaSystem: {fileID: 3918062540053835961}
 --- !u!114 &174388208633614348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,4 +108,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1de03d19b9a982449ba0b172aa8527b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 0
   currentHealth: 0
+--- !u!114 &3918062540053835961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813945965691147364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 300ab792b0ac08846a196d1f75a0d337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMana: 0
+  currentMana: 0

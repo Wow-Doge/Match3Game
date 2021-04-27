@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5df4eace786d6744aa8348bae04dbcb, type: 3}
-  m_Name: GreenCharacter
+  m_Name: RedCharacter
   m_EditorClassIdentifier: 
-  maxHealth: 5000
-  damage: 75
-  mana: 15
-  color: 2
+  maxHealth: 1000
+  damage: 150
+  mana: 3
+  color: 0

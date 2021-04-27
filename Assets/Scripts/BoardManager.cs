@@ -358,7 +358,7 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
-        ScoreManager.Instance.IncreaseScore(totalScore);
+        //ScoreManager.Instance.IncreaseScore(totalScore);
         StartCoroutine(CollapseRow());
     }
 
@@ -889,7 +889,7 @@ public class BoardManager : MonoBehaviour
     private void CountColor()
     {
         AddToDict();
-        ScoreManager.Instance.ToText();
+        //ScoreManager.Instance.ToText();
     }
 }
 
