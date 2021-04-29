@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MediumEnemy
   m_EditorClassIdentifier: 
   maxHealth: 2000
-  damage: 50
-  charge: 5
+  damage: 50000
+  charge: 1

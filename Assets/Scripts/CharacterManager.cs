@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -23,27 +24,5 @@ public class CharacterManager : MonoBehaviour
 
         healthSystem.SetCurrentHealth(health);
         manaSystem.SetMana(mana);
-    }
-
-    public void UsingSkill()
-    {
-        switch (abilitySystem.targetType)
-        {
-            case "Single":
-                GameObject target = BattleSystem.Instance.enemyBattle.Find(enemy => enemy.GetComponent<EnemyManager>().isSelected == true);
-                target.GetComponent<EnemyManager>().healthSystem.TakeDamage(abilitySystem.damage);
-                Debug.Log(abilitySystem.damage);
-                break;
-            case "All":
-                foreach (var enemy in BattleSystem.Instance.enemyBattle)
-                {
-                    enemy.GetComponent<EnemyManager>().healthSystem.TakeDamage(abilitySystem.damage);
-                    Debug.Log(abilitySystem.damage);
-                }
-                break;
-            default:
-                break;
-        }
-        Debug.Log(gameObject + " use skill");
     }
 }

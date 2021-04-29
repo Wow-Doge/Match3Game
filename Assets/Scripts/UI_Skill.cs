@@ -21,7 +21,7 @@ public class UI_Skill : MonoBehaviour
         BattleSystem.Instance.OnPlayerEndTurn -= UpdateUI;
     }
 
-    private void UpdateUI(object sender, System.EventArgs e)
+    private void UpdateUI(object sender, EventArgs e)
     {
         float minValue = manaSystem.currentMana;
         float maxValue = manaSystem.maxMana;
@@ -38,7 +38,7 @@ public class UI_Skill : MonoBehaviour
     {
         if (BattleSystem.Instance.battleState == BattleState.PLAYERTURN)
         {
-            characterManager.UsingSkill();
+            characterManager.abilitySystem.UsingSkill();
             manaSystem.ResetMana();
             ResetSkill();
         }
