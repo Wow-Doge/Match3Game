@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 5000
   damage: 75
-  mana: 5
+  mana: 3
   color: 2

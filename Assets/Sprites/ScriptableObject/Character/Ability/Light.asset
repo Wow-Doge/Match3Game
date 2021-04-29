@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df591c907d182c1429327d9f0e223f0d, type: 3}
-  m_Name: SmallEnemy
+  m_Script: {fileID: 11500000, guid: 18814cb8ae886744fb59781f538b03b2, type: 3}
+  m_Name: Light
   m_EditorClassIdentifier: 
-  maxHealth: 1000
-  damage: 50
-  charge: 3
+  abilityName: Lightning
+  damage: 500
+  targetType: 1

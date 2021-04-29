@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class UI_Skill : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class UI_Skill : MonoBehaviour
     {
         if (BattleSystem.Instance.battleState == BattleState.PLAYERTURN)
         {
-            Debug.Log("use skill");
+            characterManager.UsingSkill();
             manaSystem.ResetMana();
             ResetSkill();
         }

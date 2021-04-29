@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 3000
   damage: 50
-  charge: 1
+  charge: 7

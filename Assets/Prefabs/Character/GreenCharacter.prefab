@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1813212179711391611}
   - component: {fileID: -5585216823323379517}
   - component: {fileID: 8815513810425759527}
+  - component: {fileID: -6124994854378991045}
   m_Layer: 5
   m_Name: GreenCharacter
   m_TagString: Untagged
@@ -96,6 +97,7 @@ MonoBehaviour:
   color: 
   healthSystem: {fileID: -5585216823323379517}
   manaSystem: {fileID: 8815513810425759527}
+  abilitySystem: {fileID: -6124994854378991045}
 --- !u!114 &-5585216823323379517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,3 +126,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxMana: 0
   currentMana: 0
+--- !u!114 &-6124994854378991045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813212179711391609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f2bbbc10aca574a8e40aaefd91a9ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ability: {fileID: 11400000, guid: 72bb914696ea0c0419f438c7755949b6, type: 2}
+  abilityName: 
+  damage: 0
+  targetType: 
