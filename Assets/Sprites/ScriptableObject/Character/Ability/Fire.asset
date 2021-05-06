@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Fire
   m_EditorClassIdentifier: 
   abilityName: Fireball
-  damage: 1000
+  damage: 10000
   targetType: 0

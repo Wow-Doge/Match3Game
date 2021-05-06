@@ -37,8 +37,9 @@ public class AbilitySystem : MonoBehaviour
                 target.GetComponent<EnemyManager>().healthSystem.TakeDamage(damage);
                 break;
             case "All":
-                foreach (var enemy in BattleSystem.Instance.enemyBattle)
+                for (int i = 0; i < BattleSystem.Instance.enemyBattle.Count; i++)
                 {
+                    GameObject enemy = BattleSystem.Instance.enemyBattle[i];
                     enemy.GetComponent<EnemyManager>().healthSystem.TakeDamage(damage);
                 }
                 break;

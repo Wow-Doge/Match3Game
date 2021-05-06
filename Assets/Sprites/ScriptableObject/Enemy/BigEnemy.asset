@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BigEnemy
   m_EditorClassIdentifier: 
   maxHealth: 3000
-  damage: 50000
-  charge: 1
+  damage: 100
+  charge: 6

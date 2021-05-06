@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Thorn
   m_EditorClassIdentifier: 
   abilityName: Tree
-  damage: 750
+  damage: 7500
   targetType: 0

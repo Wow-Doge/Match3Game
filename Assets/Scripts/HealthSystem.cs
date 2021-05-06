@@ -33,8 +33,6 @@ public class HealthSystem : MonoBehaviour
         Debug.Log(gameObject.name + "die");
         Destroy(gameObject);
 
-
-
         BattleSystem.Instance.enemyBattle.Remove(gameObject);
         BattleSystem.Instance.charBattle.Remove(gameObject);
         if (BattleSystem.Instance.enemyBattle.Count > 0)
