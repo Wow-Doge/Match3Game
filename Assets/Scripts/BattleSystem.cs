@@ -45,6 +45,7 @@ public class BattleSystem : MonoBehaviour
 
         BoardManager.Instance.OnTurnEnd += NextTurn;
     }
+
     private IEnumerator StartBattle()
     {
         SpawnCharacters();
@@ -194,4 +195,6 @@ public class BattleSystem : MonoBehaviour
     {
         battleState = charBattle.Count > 0 ? BattleState.PLAYERTURN : BattleState.LOST;
     }
+
+
 }
