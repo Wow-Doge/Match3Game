@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Light
   m_EditorClassIdentifier: 
   abilityName: Lightning
-  damage: 1000
+  damage: 10000
   targetType: 1

@@ -46,6 +46,7 @@ public class BoardManager : MonoBehaviour
 
     public Dictionary<string, List<GameObject>> dict = new Dictionary<string, List<GameObject>>();
     public GameObject battleSystem;
+    public GameObject candyBackground;
 
     public event EventHandler OnTurnEnd;
     private void Awake()
@@ -87,6 +88,7 @@ public class BoardManager : MonoBehaviour
                 if (!blankSpaces[i, j])
                 {
                     Vector2 tempPos = new Vector2(i, j + offset);
+                    Vector2 finalPos = new Vector2(i, j);
                     int random = Random.Range(0, candyType.Count);
                     int maxIterations = 0;
                     while (CheckMatchInit(i, j, candyType[random]) && maxIterations < 100)
@@ -100,6 +102,8 @@ public class BoardManager : MonoBehaviour
                     newCandy.transform.parent = this.transform;
                     newCandy.name = newCandy.name.Replace("(Clone)", "");
                     candyPos[i, j] = newCandy;
+                    GameObject candyBG = Instantiate(candyBackground, finalPos, Quaternion.identity);
+                    candyBG.transform.parent = this.transform;
                 }
             }
         }
