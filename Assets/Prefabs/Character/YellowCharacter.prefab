@@ -112,6 +112,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 0
   currentHealth: 0
+  UIHealth: {fileID: 4941942916226664940, guid: 5bb81c64b02e5204cb070f72ba7165bf,
+    type: 3}
 --- !u!114 &7827976020648176840
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -47,7 +47,6 @@ public class AbilitySystem : MonoBehaviour
             default:
                 break;
         }
-        Debug.Log(gameObject + " use skill");
     }
 
     public void UsingSkill()

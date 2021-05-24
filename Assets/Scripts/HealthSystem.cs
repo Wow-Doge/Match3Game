@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public class HealthSystem : MonoBehaviour
 {
     public int maxHealth;
     public int currentHealth;
-
+    public event EventHandler OnHealthChange;
     public void SetCurrentHealth(int maxHealth)
     {
         this.maxHealth = maxHealth;
@@ -22,6 +24,7 @@ public class HealthSystem : MonoBehaviour
     {
         currentHealth -= amount;
         Debug.Log(gameObject + " take damage");
+        OnHealthChange?.Invoke(this, EventArgs.Empty);
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -31,8 +34,7 @@ public class HealthSystem : MonoBehaviour
 
     public void UnitDie()
     {
-        Debug.Log(gameObject.name + "die");
-        Destroy(gameObject);
+        gameObject.SetActive(false);
 
         BattleSystem.Instance.enemyBattle.Remove(gameObject);
         BattleSystem.Instance.charBattle.Remove(gameObject);

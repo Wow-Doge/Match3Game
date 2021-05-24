@@ -94,7 +94,6 @@ public class BattleSystem : MonoBehaviour
             battleState = BattleState.WIN;
             yield break;
         }
-        yield return new WaitForSeconds(0.5f);
         StartCoroutine(EnemiesTurn());
     }
 
